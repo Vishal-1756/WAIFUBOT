@@ -1,3 +1,4 @@
+pyromod
 pymongo[srv]
 pyrogram
 telethon
