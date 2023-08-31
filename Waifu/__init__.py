@@ -5,6 +5,14 @@ from pyrogram import filters
 from pyrogram import Client
 from telethon import TelegramClient
 from telethon.sessions import MemorySession
+import pyromod.listen
+from pymongo import MongoClient
+
+
+MONGODB_URL = "mongodb+srv://nandhaxd:rw5T7YJRjsE3fmk3@cluster0.80igexg.mongodb.net/?retryWrites=true&w=majority"
+MONGO = MongoClient(MONGODB_URL)
+DATABASE = MONGO.WAIFU
+
 
 FORMAT = "[WAIFU]: %(message)s"
 
