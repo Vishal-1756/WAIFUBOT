@@ -1,0 +1,8 @@
+pymongo[srv]
+pyrogram
+asyncio
+tgcrypto
+requests
+motor
+secureme
+wget 
