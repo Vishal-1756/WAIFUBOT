@@ -9,9 +9,8 @@ markup = InlineKeyboardMarkup([
 
 caption = "TEAM-X WAIFU GRABBER STARTED"
 photo = "https://telegra.ph/file/dc35ba52828e09744b3cc.jpg"
-GROUP = "-1001964645198"
 
 if __name__ == "__main__":
     waifu.run()
     with waifu:
-        waifu.send_photo(chat_id=-1001964645198, photo=photo, caption=caption, reply_markup=markup)
+        waifu.send_photo(chat_id=-1001849819947, photo=photo, caption=caption, reply_markup=markup)
