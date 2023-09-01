@@ -12,7 +12,7 @@ with open("waifu.json", "r") as file:
 # Counter to track the number of messages in the group
 message_count = 0
 
-@filters.text & filters.group
+@waifu.on_message(filters.text & filters.group)
 def on_text_message(_, message: Message):
     global message_count
     message_count += 1
