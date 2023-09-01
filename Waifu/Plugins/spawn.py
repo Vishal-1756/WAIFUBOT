@@ -4,7 +4,6 @@ from pyrogram import filters
 from pyrogram.types import Message
 from Waifu import waifu
 
-
 # Load waifu data from the "waifu.json" file
 with open("waifu.json", "r") as file:
     waifus = json.load(file)
@@ -23,7 +22,12 @@ def on_text_message(_, message: Message):
         
         # Send a random waifu from your data when 5 messages are reached
         random_waifu = random.choice(waifus["waifus"])
-        message.reply_photo(photo=random_waifu["image"], caption=f"{random_waifu['name']} - {random_waifu['rank']}")
+        
+        # Check if random_waifu is not None before replying
+        if random_waifu:
+            message.reply_photo(photo=random_waifu.get("image", ""), caption=f"{random_waifu.get('name', '')} - {random_waifu.get('rank', '')}")
+        else:
+            message.reply_text("No random waifu found!")
 
 @waifu.on_message(filters.command("catch", prefixes="/"))
 def catch_waifu(_, message: Message):
@@ -32,13 +36,12 @@ def catch_waifu(_, message: Message):
     
     # Search for the waifu by name in your data
     found_waifu = None
-    for waifu in waifus["waifus"]:
-        if query.lower() in waifu["name"].lower():
-            found_waifu = waifu
+    for waifu_data in waifus["waifus"]:
+        if query.lower() in waifu_data.get("name", "").lower():
+            found_waifu = waifu_data
             break
     
     if found_waifu:
-        message.reply_photo(photo=found_waifu["image"], caption=f"{found_waifu['name']} - {found_waifu['rank']}")
+        message.reply_photo(photo=found_waifu.get("image", ""), caption=f"{found_waifu.get('name', '')} - {found_waifu.get('rank', '')}")
     else:
         message.reply_text("Waifu not found!")
-      
