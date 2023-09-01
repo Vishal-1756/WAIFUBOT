@@ -1,6 +1,6 @@
 import random
 import json
-from pyrogram import filters
+from pyrogram import Client, filters
 from pyrogram.types import Message
 from Waifu import waifu
 
@@ -12,7 +12,7 @@ with open("waifu.json", "r") as file:
 message_count = 0
 
 @waifu.on_message(filters.text & filters.group)
-async def on_text_message(_, message):
+async def on_text_message(_, message: Message):
     global message_count
     message_count += 1
     
@@ -29,14 +29,14 @@ async def on_text_message(_, message):
             rank = random_waifu.get("rank")
             
             if image_url and name and rank:
-                await waifu.reply_photo(photo=image_url, caption=f"{name} - {rank}")
+                await message.reply_photo(photo=image_url, caption=f"{name} - {rank}")
             else:
-                await waifu.reply_text("Incomplete waifu data. Unable to send.")
+                await message.reply_text("Incomplete waifu data. Unable to send.")
         else:
-            await waifu.reply_text("No random waifu found.")
+            await message.reply_text("No random waifu found.")
 
 @waifu.on_message(filters.command("catch", prefixes="/"))
-async def catch_waifu(_, message):
+async def catch_waifu(_, message: Message):
     # Get the name provided in the /catch command
     query = message.text.split("/catch ", 1)[-1].strip()
     
@@ -53,11 +53,9 @@ async def catch_waifu(_, message):
         rank = found_waifu.get("rank")
         
         if image_url and name and rank:
-            await waifu.reply_photo(photo=image_url, caption=f"{name} - {rank}")
+            await message.reply_photo(photo=image_url, caption=f"{name} - {rank}")
         else:
-            await waifu.reply_text("Incomplete waifu data. Unable to send.")
+            await message.reply_text("Incomplete waifu data. Unable to send.")
     else:
-        await waifu.reply_text("Waifu not found!")
+        await message.reply_text("Waifu not found!")
 
-# Add additional logging to track the flow of your code for debugging
-print("Bot started successfully. Listening for messages...")
