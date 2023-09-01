@@ -1,5 +1,5 @@
 import asyncio
-from Waifu.database.main import add_users_to_db, get_users_list
+from Waifu.Database.main import add_users_to_db, get_users_list
 from pyrogram import filters, enums 
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton 
 from Waifu import waifu
