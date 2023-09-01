@@ -8,7 +8,6 @@ from Waifu import waifu
 with open("waifu.json", "r") as file:
     waifus = json.load(file)
 
-# Counter to track the number of messages in the group
 message_count = 0
 
 @waifu.on_message(filters.text & filters.group)
@@ -25,15 +24,17 @@ async def on_text_message(_, message: Message):
         
         if random_waifu:
             image_url = random_waifu.get("image")
-            name = random_waifu.get("name")
             rank = random_waifu.get("rank")
             
-            if image_url and name and rank:
-                await message.reply_photo(photo=image_url, caption=f"{name} - {rank}")
+            if image_url and rank:
+                # Update the caption to include the rank and the new text
+                caption = f"UwU {rank} Just appeared in group! Catch it by /catch (name)"
+                await message.reply_photo(photo=image_url, caption=caption)
             else:
                 await message.reply_text("Incomplete waifu data. Unable to send.")
         else:
             await message.reply_text("No random waifu found.")
+
 
 @waifu.on_message(filters.command("catch", prefixes="/"))
 async def catch_waifu(_, message: Message):
@@ -49,11 +50,13 @@ async def catch_waifu(_, message: Message):
     
     if found_waifu:
         image_url = found_waifu.get("image")
-        name = found_waifu.get("name")
         rank = found_waifu.get("rank")
+        id = found_waifu.get("id")  # Assuming you have an 'id' field in your waifu data
         
-        if image_url and name and rank:
-            await message.reply_photo(photo=image_url, caption=f"{name} - {rank}")
+        if image_url and rank and id:
+            # Update the caption to include the rank, name, and image ID
+            caption = f"Gotcha! You caught a {rank} {found_waifu['name']} with image ID {id}"
+            await message.reply_photo(photo=image_url, caption=caption)
         else:
             await message.reply_text("Incomplete waifu data. Unable to send.")
     else:
