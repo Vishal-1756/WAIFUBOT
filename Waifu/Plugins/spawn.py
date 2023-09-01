@@ -21,11 +21,11 @@ def on_text_message(_, message: Message):
         message_count = 0
         
         # Send a random waifu from your data when 5 messages are reached
-        random_waifu = random.choice(waifus["waifus"])
+        random_waifu = random.choice(waifus.get("waifus", []))
         
-        # Check if random_waifu is not None before replying
-        if random_waifu:
-            message.reply_photo(photo=random_waifu.get("image", ""), caption=f"{random_waifu.get('name', '')} - {random_waifu.get('rank', '')}")
+        # Check if random_waifu is not None and has required properties before replying
+        if random_waifu and "image" in random_waifu and "name" in random_waifu and "rank" in random_waifu:
+            message.reply_photo(photo=random_waifu["image"], caption=f"{random_waifu['name']} - {random_waifu['rank']}")
         else:
             message.reply_text("No random waifu found!")
 
@@ -36,12 +36,12 @@ def catch_waifu(_, message: Message):
     
     # Search for the waifu by name in your data
     found_waifu = None
-    for waifu_data in waifus["waifus"]:
-        if query.lower() in waifu_data.get("name", "").lower():
+    for waifu_data in waifus.get("waifus", []):
+        if "name" in waifu_data and query.lower() in waifu_data["name"].lower():
             found_waifu = waifu_data
             break
     
-    if found_waifu:
-        message.reply_photo(photo=found_waifu.get("image", ""), caption=f"{found_waifu.get('name', '')} - {found_waifu.get('rank', '')}")
+    if found_waifu and "image" in found_waifu and "name" in found_waifu and "rank" in found_waifu:
+        message.reply_photo(photo=found_waifu["image"], caption=f"{found_waifu['name']} - {found_waifu['rank']}")
     else:
         message.reply_text("Waifu not found!")
