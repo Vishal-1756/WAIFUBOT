@@ -23,11 +23,17 @@ def on_text_message(_, message: Message):
         # Send a random waifu from your data when 5 messages are reached
         random_waifu = random.choice(waifus.get("waifus", []))
         
-        # Check if random_waifu is not None and has required properties before replying
-        if random_waifu and "image" in random_waifu and "name" in random_waifu and "rank" in random_waifu:
-            message.reply_photo(photo=random_waifu["image"], caption=f"{random_waifu['name']} - {random_waifu['rank']}")
+        if random_waifu:
+            image_url = random_waifu.get("image")
+            name = random_waifu.get("name")
+            rank = random_waifu.get("rank")
+            
+            if image_url and name and rank:
+                message.reply_photo(photo=image_url, caption=f"{name} - {rank}")
+            else:
+                message.reply_text("Incomplete waifu data. Unable to send.")
         else:
-            message.reply_text("No random waifu found!")
+            message.reply_text("No random waifu found.")
 
 @waifu.on_message(filters.command("catch", prefixes="/"))
 def catch_waifu(_, message: Message):
@@ -41,7 +47,17 @@ def catch_waifu(_, message: Message):
             found_waifu = waifu_data
             break
     
-    if found_waifu and "image" in found_waifu and "name" in found_waifu and "rank" in found_waifu:
-        message.reply_photo(photo=found_waifu["image"], caption=f"{found_waifu['name']} - {found_waifu['rank']}")
+    if found_waifu:
+        image_url = found_waifu.get("image")
+        name = found_waifu.get("name")
+        rank = found_waifu.get("rank")
+        
+        if image_url and name and rank:
+            message.reply_photo(photo=image_url, caption=f"{name} - {rank}")
+        else:
+            message.reply_text("Incomplete waifu data. Unable to send.")
     else:
         message.reply_text("Waifu not found!")
+
+# Add additional logging to track the flow of your code for debugging
+print("Bot started successfully. Listening for messages...")
