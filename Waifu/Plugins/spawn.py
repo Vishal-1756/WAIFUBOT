@@ -12,7 +12,7 @@ with open("waifu.json", "r") as file:
 message_count = 0
 
 @waifu.on_message(filters.text & filters.group)
-def on_text_message(_, message):
+async def on_text_message(_, message):
     global message_count
     message_count += 1
     
@@ -36,7 +36,7 @@ def on_text_message(_, message):
             message.reply_text("No random waifu found.")
 
 @waifu.on_message(filters.command("catch", prefixes="/"))
-def catch_waifu(_, message):
+async def catch_waifu(_, message):
     # Get the name provided in the /catch command
     query = message.text.split("/catch ", 1)[-1].strip()
     
