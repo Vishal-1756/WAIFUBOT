@@ -3,8 +3,6 @@ import os
 import time
 from pyrogram import filters
 from pyrogram import Client
-from telethon import TelegramClient
-from telethon.sessions import MemorySession
 import pyromod.listen
 from pymongo import MongoClient
 
@@ -55,8 +53,6 @@ waifu = Client("waifu",
        api_hash=api_hash,
        bot_token=bot_token,
        plugins=dict(root="Waifu/Plugins"), )
-
-bot = TelegramClient(MemorySession(), API_ID, API_HASH)
 
 
 @waifu.on_message(filters.command("ping", prefixes="/"))
