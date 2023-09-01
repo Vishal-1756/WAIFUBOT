@@ -29,11 +29,11 @@ async def on_text_message(_, message):
             rank = random_waifu.get("rank")
             
             if image_url and name and rank:
-                message.reply_photo(photo=image_url, caption=f"{name} - {rank}")
+                await waifu.reply_photo(photo=image_url, caption=f"{name} - {rank}")
             else:
-                message.reply_text("Incomplete waifu data. Unable to send.")
+                await waifu.reply_text("Incomplete waifu data. Unable to send.")
         else:
-            message.reply_text("No random waifu found.")
+            await waifu.reply_text("No random waifu found.")
 
 @waifu.on_message(filters.command("catch", prefixes="/"))
 async def catch_waifu(_, message):
@@ -53,11 +53,11 @@ async def catch_waifu(_, message):
         rank = found_waifu.get("rank")
         
         if image_url and name and rank:
-            message.reply_photo(photo=image_url, caption=f"{name} - {rank}")
+            await waifu.reply_photo(photo=image_url, caption=f"{name} - {rank}")
         else:
-            message.reply_text("Incomplete waifu data. Unable to send.")
+            await waifu.reply_text("Incomplete waifu data. Unable to send.")
     else:
-        message.reply_text("Waifu not found!")
+        await waifu.reply_text("Waifu not found!")
 
 # Add additional logging to track the flow of your code for debugging
 print("Bot started successfully. Listening for messages...")
