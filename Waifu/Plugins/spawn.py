@@ -31,13 +31,13 @@ async def on_text_message(_, message: Message):
             if image_url and rank:
                 # Update the caption to include the rank and the new text
                 caption = f"UwU {rank} Just appeared in group! Catch it by /catch (name)"
-                await waifu.send_photo(chat_id=message.chat.id, photo=image_url, caption=caption)
+                await message.send_photo(chat_id=message.chat.id, photo=image_url, caption=caption)
             else:
-                await waifu.send_message(chat_id=message.chat.id, text="Incomplete waifu data. Unable to send.")
+                await message.send_message(chat_id=message.chat.id, text="Incomplete waifu data. Unable to send.")
         else:
-            await waifu.send_message(chat_id=message.chat.id, text="No random waifu found.")
+            await message.send_message(chat_id=message.chat.id, text="No random waifu found.")
 
-@waifu.on_message(filters.command("catch", prefix))
+@waifu.on_message(filters.command("c", prefix))
 async def catch_waifu(_, message):
     # Get the name provided in the /catch command
     query = message.text.split(maxsplit=1)[1]
@@ -59,13 +59,13 @@ async def catch_waifu(_, message):
             await add_waifu_to_db(user_id, found_waifu['name'])
             # Update the caption to include the rank, name, and image ID
             caption = f"Gotcha! You caught a {rank} {found_waifu['name']} with image ID {id}"
-            await waifu.send_photo(chat_id=message.chat.id, photo=image_url, caption=caption)
+            await message.send_photo(chat_id=message.chat.id, photo=image_url, caption=caption)
         else:
-            await waifu.send_message(chat_id=message.chat.id, text="Incomplete waifu data. Unable to send.")
+            await message.send_message(chat_id=message.chat.id, text="Incomplete waifu data. Unable to send.")
     else:
-        await waifu.send_message(chat_id=message.chat.id, text="Waifu not found.")
+        await message.send_message(chat_id=message.chat.id, text="Waifu not found.")
 
-@waifu.on_message(filters.command("harem", prefix))
+@waifu.on_message(filters.command("h", prefix))
 async def harem_command(_, message):
     user_id = message.from_user.id
     user_waifus = await get_user_waifus(user_id)
