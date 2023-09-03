@@ -37,7 +37,7 @@ async def on_text_message(_, message: Message):
             await message.reply_text("No random waifu found.")
 
 
-@app.on_message(filters.command("catch", prefixes="/"))
+@waifu.on_message(filters.command("catch", prefixes="/"))
 async def catch_waifu(_, message: Message):
     # Get the name provided in the /catch command
     query = message.text.split("/catch ", 1)[-1].strip()
@@ -65,7 +65,7 @@ async def catch_waifu(_, message: Message):
     else:
         await message.reply_text("Waifu not found!")
 
-@app.on_message(filters.command("harem", prefixes="/"))
+@waifu.on_message(filters.command("harem", prefixes="/"))
 async def harem_command(_, message: Message):
     user_id = message.from_user.id
     user_waifus = await get_user_waifus(user_id)
