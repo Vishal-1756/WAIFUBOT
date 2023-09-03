@@ -38,7 +38,7 @@ async def on_text_message(_, message: Message):
             await waifu.send_message(chat_id=message.chat.id, text="No random waifu found.")
 
 
-@waifu.on_message(filters.command("catch", prefixes="/") & filters.regex(r"/catch [a-zA-Z]+"))
+@waifu.on_message(filters.command("catch", prefixes="/"))
 async def catch_waifu(_, message):
     # Check if there are waifus available in the data
     if waifus.get("waifus"):
