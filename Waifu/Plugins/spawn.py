@@ -3,7 +3,7 @@ import json
 from pyrogram import Client, filters
 from pyrogram.types import Message
 from Waifu import waifu
-from Waifu.database.main import get_user_waifus, add_waifu_to_db
+from Waifu.Database.main import get_user_waifus, add_waifu_to_db
 
 # Load waifu data from the "waifu.json" file
 with open("waifu.json", "r") as file:
