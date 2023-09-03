@@ -3,6 +3,7 @@ import json
 from pyrogram import Client, filters
 from pyrogram.types import Message
 from Waifu import waifu
+from Waifu.database.main import get_user_waifus, add_waifu_to_db
 
 # Load waifu data from the "waifu.json" file
 with open("waifu.json", "r") as file:
@@ -36,7 +37,7 @@ async def on_text_message(_, message: Message):
             await message.reply_text("No random waifu found.")
 
 
-@waifu.on_message(filters.command("catch", prefixes="/"))
+@app.on_message(filters.command("catch", prefixes="/"))
 async def catch_waifu(_, message: Message):
     # Get the name provided in the /catch command
     query = message.text.split("/catch ", 1)[-1].strip()
@@ -54,6 +55,8 @@ async def catch_waifu(_, message: Message):
         id = found_waifu.get("id")  # Assuming you have an 'id' field in your waifu data
         
         if image_url and rank and id:
+            user_id = message.from_user.id
+            await add_waifu_to_db(user_id, found_waifu['name'])
             # Update the caption to include the rank, name, and image ID
             caption = f"Gotcha! You caught a {rank} {found_waifu['name']} with image ID {id}"
             await message.reply_photo(photo=image_url, caption=caption)
@@ -61,4 +64,18 @@ async def catch_waifu(_, message: Message):
             await message.reply_text("Incomplete waifu data. Unable to send.")
     else:
         await message.reply_text("Waifu not found!")
+
+@app.on_message(filters.command("harem", prefixes="/"))
+async def harem_command(_, message: Message):
+    user_id = message.from_user.id
+    user_waifus = await get_user_waifus(user_id)
+    
+    if user_waifus:
+        waifu_list = "\n".join(user_waifus)
+        reply_text = f"Your harem:\n{waifu_list}"
+    else:
+        reply_text = "Your harem is empty!"
+    
+    await message.reply_text(reply_text)
+
 
