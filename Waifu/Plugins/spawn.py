@@ -82,6 +82,6 @@ async def harem_command(_, message):
     else:
         reply_text = "Your harem is empty!"
     
-    await waifu.send_message(chat_id=message.chat.id, text=reply_text)
-
+    # Use the message object to reply
+    await message.reply_text(reply_text)
 
