@@ -52,7 +52,7 @@ waifu = Client("waifu",
        api_id=api_id, 
        api_hash=api_hash,
        bot_token=bot_token,
-       plugins=dict(root="Waifu/Plugins"), )
+       plugins=dict(root="Waifu"), )
 
 
 @waifu.on_message(filters.command("ping", prefixes="/"))
