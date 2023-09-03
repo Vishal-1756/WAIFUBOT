@@ -37,36 +37,41 @@ async def on_text_message(_, message: Message):
             await message.reply_text("No random waifu found.")
 
 
-@waifu.on_message(filters.command("catch", prefixes="/"))
-async def catch_waifu(_, message: Message):
-    # Get the name provided in the /catch command
-    query = message.text.split("/catch ", 1)[-1].strip()
-    
-    # Search for the waifu by name in your data
-    found_waifu = None
-    for waifu_data in waifus.get("waifus", []):
-        if "name" in waifu_data and query.lower() in waifu_data["name"].lower():
-            found_waifu = waifu_data
-            break
-    
-    if found_waifu:
-        image_url = found_waifu.get("image")
-        rank = found_waifu.get("rank")
-        id = found_waifu.get("id")  # Assuming you have an 'id' field in your waifu data
-        
-        if image_url and rank and id:
-            user_id = message.from_user.id
-            await add_waifu_to_db(user_id, found_waifu['name'])
-            # Update the caption to include the rank, name, and image ID
-            caption = f"Gotcha! You caught a {rank} {found_waifu['name']} with image ID {id}"
-            await message.reply_photo(photo=image_url, caption=caption)
+@waifu.on_message(filters.command("catch", prefixes="/") & filters.regex(r"/catch [a-zA-Z]+"))
+async def catch_waifu(_, message):
+    # Check if there are waifus available in the data
+    if waifus.get("waifus"):
+        # Get the name provided in the /catch command
+        query = message.text.split("/catch ", 1)[-1].strip()
+
+        # Search for the waifu by name in your data
+        found_waifu = None
+        for waifu_data in waifus["waifus"]:
+            if "name" in waifu_data and query.lower() in waifu_data["name"].lower():
+                found_waifu = waifu_data
+                break
+
+        if found_waifu:
+            image_url = found_waifu.get("image")
+            rank = found_waifu.get("rank")
+            id = found_waifu.get("id")  # Assuming you have an 'id' field in your waifu data
+
+            if image_url and rank and id:
+                user_id = message.from_user.id
+                await add_waifu_to_db(user_id, found_waifu['name'])
+                # Update the caption to include the rank, name, and image ID
+                caption = f"Gotcha! You caught a {rank} {found_waifu['name']} with image ID {id}"
+                await waifu.send_photo(chat_id=message.chat.id, photo=image_url, caption=caption)
+            else:
+                await waifu.send_message(chat_id=message.chat.id, text="Incomplete waifu data. Unable to send.")
         else:
-            await message.reply_text("Incomplete waifu data. Unable to send.")
+            await waifu.send_message(chat_id=message.chat.id, text="Waifu not found.")
     else:
-        await message.reply_text("Waifu not found!")
+        await waifu.send_message(chat_id=message.chat.id, text="No waifus available at the moment.")
+
 
 @waifu.on_message(filters.command("harem", prefixes="/"))
-async def harem_command(_, message: Message):
+async def harem_command(_, waifu):
     user_id = message.from_user.id
     user_waifus = await get_user_waifus(user_id)
     
@@ -76,6 +81,6 @@ async def harem_command(_, message: Message):
     else:
         reply_text = "Your harem is empty!"
     
-    await message.reply_text(reply_text)
+    await waifu.reply_text(reply_text)
 
 
