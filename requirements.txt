@@ -1,7 +1,6 @@
 pyromod
 pymongo[srv]
 pyrogram
-telethon
 asyncio
 tgcrypto
 requests
