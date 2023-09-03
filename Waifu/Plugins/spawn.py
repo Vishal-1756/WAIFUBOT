@@ -43,7 +43,7 @@ async def catch_waifu(_, message):
     # Check if there are waifus available in the data
     if waifus.get("waifus"):
         # Get the name provided in the /catch command
-        query = message.text.split("/catch ", 1)[-1].strip()
+        query = message.text.split(maxsplit=1)[1]
 
         # Search for the waifu by name in your data
         found_waifu = None
