@@ -2,8 +2,9 @@ import random
 import json
 from pyrogram import Client, filters
 from pyrogram.types import Message
-from Waifu import waifu
 from Waifu.Database.main import get_user_waifus, add_waifu_to_db
+from Waifu import waifu
+
 
 # Load waifu data from the "waifu.json" file
 with open("waifu.json", "r") as file:
@@ -30,11 +31,11 @@ async def on_text_message(_, message: Message):
             if image_url and rank:
                 # Update the caption to include the rank and the new text
                 caption = f"UwU {rank} Just appeared in group! Catch it by /catch (name)"
-                await message.reply_photo(photo=image_url, caption=caption)
+                await waifu.send_photo(chat_id=message.chat.id, photo=image_url, caption=caption)
             else:
-                await message.reply_text("Incomplete waifu data. Unable to send.")
+                await waifu.send_message(chat_id=message.chat.id, text="Incomplete waifu data. Unable to send.")
         else:
-            await message.reply_text("No random waifu found.")
+            await waifu.send_message(chat_id=message.chat.id, text="No random waifu found.")
 
 
 @waifu.on_message(filters.command("catch", prefixes="/") & filters.regex(r"/catch [a-zA-Z]+"))
@@ -61,17 +62,17 @@ async def catch_waifu(_, message):
                 await add_waifu_to_db(user_id, found_waifu['name'])
                 # Update the caption to include the rank, name, and image ID
                 caption = f"Gotcha! You caught a {rank} {found_waifu['name']} with image ID {id}"
-                await message.send_photo(chat_id=message.chat.id, photo=image_url, caption=caption)
+                await waifu.send_photo(chat_id=message.chat.id, photo=image_url, caption=caption)
             else:
-                await message.send_message(chat_id=message.chat.id, text="Incomplete waifu data. Unable to send.")
+                await waifu.send_message(chat_id=message.chat.id, text="Incomplete waifu data. Unable to send.")
         else:
-            await message.send_message(chat_id=message.chat.id, text="Waifu not found.")
+            await waifu.send_message(chat_id=message.chat.id, text="Waifu not found.")
     else:
-        await message.send_message(chat_id=message.chat.id, text="No waifus available at the moment.")
+        await waifu.send_message(chat_id=message.chat.id, text="No waifus available at the moment.")
 
 
 @waifu.on_message(filters.command("harem", prefixes="/"))
-async def harem_command(_, waifu):
+async def harem_command(_, message):
     user_id = message.from_user.id
     user_waifus = await get_user_waifus(user_id)
     
@@ -81,6 +82,6 @@ async def harem_command(_, waifu):
     else:
         reply_text = "Your harem is empty!"
     
-    await message.reply_text(reply_text)
+    await waifu.send_message(chat_id=message.chat.id, text=reply_text)
 
 
