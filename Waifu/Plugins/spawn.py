@@ -61,13 +61,13 @@ async def catch_waifu(_, message):
                 await add_waifu_to_db(user_id, found_waifu['name'])
                 # Update the caption to include the rank, name, and image ID
                 caption = f"Gotcha! You caught a {rank} {found_waifu['name']} with image ID {id}"
-                await waifu.send_photo(chat_id=message.chat.id, photo=image_url, caption=caption)
+                await message.send_photo(chat_id=message.chat.id, photo=image_url, caption=caption)
             else:
-                await waifu.send_message(chat_id=message.chat.id, text="Incomplete waifu data. Unable to send.")
+                await message.send_message(chat_id=message.chat.id, text="Incomplete waifu data. Unable to send.")
         else:
-            await waifu.send_message(chat_id=message.chat.id, text="Waifu not found.")
+            await message.send_message(chat_id=message.chat.id, text="Waifu not found.")
     else:
-        await waifu.send_message(chat_id=message.chat.id, text="No waifus available at the moment.")
+        await message.send_message(chat_id=message.chat.id, text="No waifus available at the moment.")
 
 
 @waifu.on_message(filters.command("harem", prefixes="/"))
@@ -81,6 +81,6 @@ async def harem_command(_, waifu):
     else:
         reply_text = "Your harem is empty!"
     
-    await waifu.reply_text(reply_text)
+    await message.reply_text(reply_text)
 
 
