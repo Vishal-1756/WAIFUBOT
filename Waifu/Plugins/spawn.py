@@ -1,10 +1,9 @@
 import random
 import json
-from pyrogram import Client, filters
+from pyrogram import filters
 from pyrogram.types import Message
 from Waifu.Database.main import get_user_waifus, add_waifu_to_db
 from Waifu import waifu
-
 
 # Load waifu data from the "waifu.json" file
 with open("waifu.json", "r") as file:
@@ -17,7 +16,7 @@ async def on_text_message(_, message: Message):
     global message_count
     message_count += 1
     
-    if message_count == 5:
+    if message_count == 2:
         # Reset the message count
         message_count = 0
         
@@ -36,7 +35,6 @@ async def on_text_message(_, message: Message):
                 await waifu.send_message(chat_id=message.chat.id, text="Incomplete waifu data. Unable to send.")
         else:
             await waifu.send_message(chat_id=message.chat.id, text="No random waifu found.")
-
 
 @waifu.on_message(filters.command("catch", prefixes="/") & filters.group)
 async def catch_waifu(_, message):
@@ -69,7 +67,6 @@ async def catch_waifu(_, message):
             await waifu.send_message(chat_id=message.chat.id, text="Waifu not found.")
     else:
         await waifu.send_message(chat_id=message.chat.id, text="No waifus available at the moment.")
-
 
 @waifu.on_message(filters.command("harem", prefixes="/") & filters.group)
 async def harem_command(_, message):
