@@ -18,38 +18,13 @@ with open("waifu.json", "r") as file:
 # Counter to track the number of messages in the group
 message_count = 0
 
-# Your message handler for text messages in groups
-@waifu.on_message(filters.text & filters.group)
-async def on_text_message(_, message: Message):
-    global message_count, spawned_waifu, spawned_waifu_name
-    
-    message_count += 1
-    
-    if message_count == 5:
-        message_count = 0
-        
-        # Send a random waifu from your data when 5 messages are reached
-        spawned_waifu = random.choice(waifus.get("waifus", []))
-        if spawned_waifu:
-            spawned_waifu_name = spawned_waifu.get("name")
-            image_url = spawned_waifu.get("image")
-            rank = spawned_waifu.get("rank")
-            
-            if image_url and rank:
-                caption = f"UwU {rank} just appeared in the group! Catch it by using /catch {spawned_waifu_name}"
-                await waifu.send_photo(chat_id=message.chat.id, photo=image_url, caption=caption)
-            else:
-                await waifu.send_message(chat_id=message.chat.id, text="Incomplete waifu data. Unable to send.")
-        else:
-            await waifu.send_message(chat_id=message.chat.id, text="No random waifu found.")
-
 # Your message handler for the /catch command
 @waifu.on_message(filters.command("catch", prefix) & filters.group)
 async def catch_waifu(_, message):
     global spawned_waifu_name
     
     if spawned_waifu_name:
-        query = waifu.text.split(maxsplit=1)[1]
+        query = message.text.split(maxsplit=1)[1]
         
         # Check if the provided name matches the spawned waifu's name
         if query.lower() == spawned_waifu_name.lower():
@@ -86,4 +61,29 @@ async def harem_command(_, message):
 
 # Additional code for other commands or functionalities can be added as needed.
 
+
+# Your message handler for text messages in groups
+@waifu.on_message(filters.text & filters.group)
+async def on_text_message(_, message: Message):
+    global message_count, spawned_waifu, spawned_waifu_name
+    
+    message_count += 1
+    
+    if message_count == 5:
+        message_count = 0
+        
+        # Send a random waifu from your data when 5 messages are reached
+        spawned_waifu = random.choice(waifus.get("waifus", []))
+        if spawned_waifu:
+            spawned_waifu_name = spawned_waifu.get("name")
+            image_url = spawned_waifu.get("image")
+            rank = spawned_waifu.get("rank")
+            
+            if image_url and rank:
+                caption = f"UwU {rank} just appeared in the group! Catch it by using /catch {spawned_waifu_name}"
+                await waifu.send_photo(chat_id=message.chat.id, photo=image_url, caption=caption)
+            else:
+                await waifu.send_message(chat_id=message.chat.id, text="Incomplete waifu data. Unable to send.")
+        else:
+            await waifu.send_message(chat_id=message.chat.id, text="No random waifu found.")
 
