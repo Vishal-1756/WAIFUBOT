@@ -49,7 +49,7 @@ async def catch_waifu(_, message):
     global spawned_waifu_name
     
     if spawned_waifu_name:
-        query = message.text.split(maxsplit=1)[1]
+        query = waifu.text.split(maxsplit=1)[1]
         
         # Check if the provided name matches the spawned waifu's name
         if query.lower() == spawned_waifu_name.lower():
