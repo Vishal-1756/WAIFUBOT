@@ -8,6 +8,9 @@ from Waifu import waifu, prefix
 # Variable to store the currently spawned waifu
 spawned_waifu = None
 
+# Variable to store the name of the spawned waifu
+spawned_waifu_name = None
+
 # Load waifu data from the "waifu.json" file
 with open("waifu.json", "r") as file:
     waifus = json.load(file)
@@ -15,25 +18,10 @@ with open("waifu.json", "r") as file:
 # Counter to track the number of messages in the group
 message_count = 0
 
-# Define a function to send a spawned waifu
-async def send_spawned_waifu(chat_id):
-    global spawned_waifu
-    if spawned_waifu:
-        image_url = spawned_waifu.get("image")
-        rank = spawned_waifu.get("rank")
-
-        if image_url and rank:
-            caption = f"UwU {rank} just appeared in the group! Catch it by using /catch {spawned_waifu['name']}"
-            await waifu.send_photo(chat_id=chat_id, photo=image_url, caption=caption)
-        else:
-            await waifu.send_message(chat_id=chat_id, text="Incomplete waifu data. Unable to send.")
-    else:
-        await waifu.send_message(chat_id=chat_id, text="No random waifu found.")
-
 # Your message handler for text messages in groups
 @waifu.on_message(filters.text & filters.group)
 async def on_text_message(_, message: Message):
-    global message_count, spawned_waifu
+    global message_count, spawned_waifu, spawned_waifu_name
     
     message_count += 1
     
@@ -42,14 +30,25 @@ async def on_text_message(_, message: Message):
         
         # Send a random waifu from your data when 5 messages are reached
         spawned_waifu = random.choice(waifus.get("waifus", []))
-        await send_spawned_waifu(message.chat.id)
+        if spawned_waifu:
+            spawned_waifu_name = spawned_waifu.get("name")
+            image_url = spawned_waifu.get("image")
+            rank = spawned_waifu.get("rank")
+            
+            if image_url and rank:
+                caption = f"UwU {rank} just appeared in the group! Catch it by using /catch {spawned_waifu_name}"
+                await waifu.send_photo(chat_id=message.chat.id, photo=image_url, caption=caption)
+            else:
+                await waifu.send_message(chat_id=message.chat.id, text="Incomplete waifu data. Unable to send.")
+        else:
+            await waifu.send_message(chat_id=message.chat.id, text="No random waifu found.")
 
+# Your message handler for the /catch command
 @waifu.on_message(filters.command("catch", prefix) & filters.group)
 async def catch_waifu(_, message):
-    global spawned_waifu
+    global spawned_waifu_name
     
-    if spawned_waifu:
-        spawned_waifu_name = spawned_waifu.get("name")
+    if spawned_waifu_name:
         query = message.text.split(maxsplit=1)[1]
         
         # Check if the provided name matches the spawned waifu's name
@@ -63,7 +62,7 @@ async def catch_waifu(_, message):
                 await add_waifu_to_db(user_id, spawned_waifu_name)
                 caption = f"Gotcha! You caught a {rank} {spawned_waifu_name} with image ID {id}"
                 await waifu.send_photo(chat_id=message.chat.id, photo=image_url, caption=caption)
-                spawned_waifu = None  # Reset the spawned waifu after catching
+                spawned_waifu_name = None  # Reset the spawned waifu name after catching
             else:
                 await waifu.send_message(chat_id=message.chat.id, text="Incomplete waifu data. Unable to send.")
         else:
@@ -84,3 +83,7 @@ async def harem_command(_, message):
         reply_text = "Your harem is empty!"
     
     await waifu.send_message(chat_id=message.chat.id, text=reply_text)
+
+# Additional code for other commands or functionalities can be added as needed.
+
+
