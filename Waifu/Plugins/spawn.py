@@ -35,7 +35,8 @@ async def on_text_message(_, message: Message):
             if image_url and rank:
                 # Update the caption to include the rank and the new text
                 caption = f"UwU {rank} Just appeared in the group! Catch it by /catch {spawned_waifu['name']}"
-                await message.send_photo(chat_id=message.chat.id, photo=image_url, caption=caption)
+                await waifu.send_photo(chat_id=message.chat.id, photo=image_url, caption=caption)
+
             else:
                 await message.send_message(chat_id=message.chat.id, text="Incomplete waifu data. Unable to send.")
         else:
