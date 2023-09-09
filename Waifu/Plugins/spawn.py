@@ -61,3 +61,5 @@ async def catch_waifu(_, message):
             await message.send_message(chat_id=message.chat.id, text="Invalid waifu name. Try again.")
     else:
         await message.send_message(chat_id=message.chat.id, text="No waifu to catch. Wait for a spawned waifu.")
+
+# Additional code for /h command not shown, but you can keep it as you had before.
