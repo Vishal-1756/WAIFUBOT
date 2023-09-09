@@ -36,13 +36,12 @@ async def on_text_message(_, message: Message):
                 # Update the caption to include the rank and the new text
                 caption = f"UwU {rank} Just appeared in the group! Catch it by /catch {spawned_waifu['name']}"
                 await waifu.send_photo(chat_id=message.chat.id, photo=image_url, caption=caption)
-
             else:
-                await message.send_message(chat_id=message.chat.id, text="Incomplete waifu data. Unable to send.")
+                await waifu.send_message(chat_id=message.chat.id, text="Incomplete waifu data. Unable to send.")
         else:
-            await message.send_message(chat_id=message.chat.id, text="No random waifu found.")
+            await waifu.send_message(chat_id=message.chat.id, text="No random waifu found.")
 
-@waifu.on_message(filters.command("catch", prefix))
+@waifu.on_message(filters.command("catch", prefix) & filters.group)
 async def catch_waifu(_, message):
     global spawned_waifu
     
@@ -61,16 +60,16 @@ async def catch_waifu(_, message):
                 await add_waifu_to_db(user_id, spawned_waifu['name'])
                 # Update the caption to include the rank, name, and image ID
                 caption = f"Gotcha! You caught a {rank} {spawned_waifu['name']} with image ID {id}"
-                await message.send_photo(chat_id=message.chat.id, photo=image_url, caption=caption)
+                await waifu.send_photo(chat_id=message.chat.id, photo=image_url, caption=caption)
                 spawned_waifu = None  # Reset the spawned waifu after catching
             else:
-                await message.send_message(chat_id=message.chat.id, text="Incomplete waifu data. Unable to send.")
+                await waifu.send_message(chat_id=message.chat.id, text="Incomplete waifu data. Unable to send.")
         else:
-            await message.send_message(chat_id=message.chat.id, text="Invalid waifu name. Try again.")
+            await waifu.send_message(chat_id=message.chat.id, text="Invalid waifu name. Try again.")
     else:
-        await message.send_message(chat_id=message.chat.id, text="No waifu to catch. Wait for a spawned waifu.")
+        await waifu.send_message(chat_id=message.chat.id, text="No waifu to catch. Wait for a spawned waifu.")
 
-@waifu.on_message(filters.command("harem", prefix))
+@waifu.on_message(filters.command("harem", prefix) & filters.group)
 async def harem_command(_, message):
     user_id = message.from_user.id
     user_waifus = await get_user_waifus(user_id)
@@ -82,6 +81,6 @@ async def harem_command(_, message):
         reply_text = "Your harem is empty!"
     
     # Use the message object to reply
-    await message.reply_text(reply_text)
+    await waifu.send_message(chat_id=message.chat.id, text=reply_text)
 
-# Additional code for /h and other commands not shown, but you can keep it as you had before.
+# Additional code for other commands not shown, but you can keep it as you had before.
