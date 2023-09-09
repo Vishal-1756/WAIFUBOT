@@ -45,22 +45,6 @@ async def catch_waifu(_, message):
     else:
         await waifu.send_message(chat_id=message.chat.id, text="No waifu to catch. Wait for a spawned waifu.")
 
-# Your message handler for the /harem command
-@waifu.on_message(filters.command("harem", prefix) & filters.group)
-async def harem_command(_, message):
-    user_id = message.from_user.id
-    user_waifus = await get_user_waifus(user_id)
-    
-    if user_waifus:
-        waifu_list = "\n".join(user_waifus)
-        reply_text = f"Your harem:\n{waifu_list}"
-    else:
-        reply_text = "Your harem is empty!"
-    
-    await waifu.send_message(chat_id=message.chat.id, text=reply_text)
-
-# Additional code for other commands or functionalities can be added as needed.
-
 
 # Your message handler for text messages in groups
 @waifu.on_message(filters.text & filters.group)
