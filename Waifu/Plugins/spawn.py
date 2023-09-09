@@ -12,13 +12,20 @@ spawned_waifu = None
 with open("waifu.json", "r") as file:
     waifus = json.load(file)
 
+# Counter to track the number of messages in the group
+message_count = 0
+
 @waifu.on_message(filters.text & filters.group)
 async def on_text_message(_, message: Message):
-    global spawned_waifu
+    global spawned_waifu, message_count
     
-    # Only select and spawn a random waifu when the trigger message is received
-    if "spawn waifu" in message.text.lower():
-        # Select a random waifu from your data
+    message_count += 1
+    
+    if message_count == 5:
+        # Reset the message count
+        message_count = 0
+        
+        # Send a random waifu from your data when 5 messages are reached
         spawned_waifu = random.choice(waifus.get("waifus", []))
         
         if spawned_waifu:
@@ -62,4 +69,18 @@ async def catch_waifu(_, message):
     else:
         await message.send_message(chat_id=message.chat.id, text="No waifu to catch. Wait for a spawned waifu.")
 
-# Additional code for /h command not shown, but you can keep it as you had before.
+@waifu.on_message(filters.command("harem", prefix))
+async def harem_command(_, message):
+    user_id = message.from_user.id
+    user_waifus = await get_user_waifus(user_id)
+    
+    if user_waifus:
+        waifu_list = "\n".join(user_waifus)
+        reply_text = f"Your harem:\n{waifu_list}"
+    else:
+        reply_text = "Your harem is empty!"
+    
+    # Use the message object to reply
+    await message.reply_text(reply_text)
+
+# Additional code for /h and other commands not shown, but you can keep it as you had before.
