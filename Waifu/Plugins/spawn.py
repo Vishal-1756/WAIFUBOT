@@ -84,8 +84,3 @@ async def harem_command(_, message):
         reply_text = "Your harem is empty!"
     
     await waifu.send_message(chat_id=message.chat.id, text=reply_text)
-
-# Additional code for other commands or functionalities can be added as needed.
-
-# Run your Pyrogram Client
-waifu.run()
