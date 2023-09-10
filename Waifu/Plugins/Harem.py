@@ -21,6 +21,10 @@ async def harem_command(_, message):
         await message.reply("Your harem is empty!")
         return
 
+    # Debug: Print the content and type of waifu_data
+    for waifu_data in user_waifus:
+        print(f"waifu_data: {waifu_data}, type: {type(waifu_data)}")
+
     # Create inline buttons for each waifu
     inline_buttons = [
         [
@@ -34,6 +38,7 @@ async def harem_command(_, message):
         "Your harem:",
         reply_markup=InlineKeyboardMarkup(inline_buttons)
     )
+
 
 # Define a callback handler for viewing a specific waifu
 @waifu.on_callback_query(filters.regex(r'^view_waifu_(\d+)$'))
