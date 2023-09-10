@@ -1,6 +1,8 @@
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InlineQueryResultPhoto
 import json
+from Waifu import waifu, prefix
+from Waifu.Database.main import get_users_list, add_waifu_to_db, get_user_waifus
 
 @waifu.on_message(filters.command("harem", prefix))
 async def harem_command(_, message):
