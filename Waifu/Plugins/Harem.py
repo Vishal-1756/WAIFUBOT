@@ -2,7 +2,7 @@ from pyrogram import filters, Client
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from Waifu.Database.main import get_users_list, add_waifu_to_db, get_user_waifus
 from Waifu import waifu, prefix 
-
+import json
 
 
 with open("waifu.json", "r") as file:
