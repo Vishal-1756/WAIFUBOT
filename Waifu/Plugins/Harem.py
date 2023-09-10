@@ -43,9 +43,9 @@ async def view_waifus_inline_query(_, inline_query):
         results.append(
             InlineQueryResultPhoto(
                 title=waifu['name'],
-                photo_url=waifu['image_url'],
-                thumb_url=waifu['image_url'],
-                caption=waifu['data']
+                photo_url=waifu['image'],
+                thumb_url=waifu['image'],
+                caption=waifu['id']
             )
         )
 
