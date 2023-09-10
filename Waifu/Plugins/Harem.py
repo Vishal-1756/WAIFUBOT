@@ -4,10 +4,8 @@ from Waifu.Database.main import get_users_list, add_waifu_to_db, get_user_waifus
 from Waifu import waifu, prefix 
 import json
 
-
 with open("waifu.json", "r") as file:
     waifus_data = json.load(file)
-
 
 @waifu.on_message(filters.command("harem", prefix))
 async def harem_command(_, message):
@@ -23,20 +21,13 @@ async def harem_command(_, message):
         await message.reply("Your harem is empty!")
         return
 
-    
-
-# Create inline buttons for each waifu
-inline_buttons = [
-    [
-        InlineKeyboardButton(waifu_data['name'], callback_data=f"view_waifu_{waifu_data['id']}")
+    # Create inline buttons for each waifu
+    inline_buttons = [
+        [
+            InlineKeyboardButton(waifu_data['name'], callback_data=f"view_waifu_{waifu_data['id']}")
+        ]
+        for waifu_data in user_waifus
     ]
-    for waifu_data in user_waifus
-]
-
-
-
-
-
 
     # Send the inline keyboard with waifu names
     await message.reply(
@@ -62,7 +53,3 @@ async def view_waifu_callback(_, callback_query):
             photo=waifu['image_url'],
             caption=waifu['data']
         )
-
-
-
-
