@@ -3,12 +3,11 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InlineQue
 import json
 from Waifu import waifu, prefix
 from Waifu.Database.main import get_users_list, add_waifu_to_db, get_user_waifus
-import json
 
 
+# Load waifu data from the JSON file
 with open("waifu.json", "r") as file:
     waifus_data = json.load(file)
-
 
 @waifu.on_message(filters.command("harem", prefix))
 async def harem_command(_, message):
@@ -40,12 +39,15 @@ async def view_waifus_inline_query(_, inline_query):
     results = []
 
     for waifu in user_waifus:
+        # Ensure the caption is converted to a string
+        caption = str(waifu['rank'])
+        
         results.append(
             InlineQueryResultPhoto(
-                title=waifu[name],
-                photo_url=waifu[image],
-                thumb_url=waifu[image],
-                caption=waifu[id]
+                title=waifu['name'],
+                photo_url=waifu['image'],
+                thumb_url=waifu['image'],
+                caption=caption
             )
         )
 
