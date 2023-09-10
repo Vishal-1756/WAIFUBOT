@@ -1,60 +1,44 @@
-from pyrogram import filters, Client
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from Waifu.Database.main import get_users_list, add_waifu_to_db, get_user_waifus
-from Waifu import waifu, prefix 
+from pyrogram import filters
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InlineQueryResultPhoto
 import json
-
-with open("waifu.json", "r") as file:
-    waifus_data = json.load(file)
 
 @waifu.on_message(filters.command("harem", prefix))
 async def harem_command(_, message):
     user_id = message.from_user.id
 
-    # Check if the user is in the database
+    # Check if the user is in the database and add them if not (you'll need to implement these functions)
     if user_id not in await get_users_list():
         await add_users_to_db(user_id)
 
-    user_waifus = await get_user_waifus(user_id)
-
-    if not user_waifus:
-        await message.reply("Your harem is empty!")
-        return
-
-    # Debug: Print the content and type of waifu_data
-    for waifu_data in user_waifus:
-        print(f"waifu_data: {waifu_data}, type: {type(waifu_data)}")
-
-    # Create inline buttons for each waifu
-    inline_buttons = [
+    # Create an inline keyboard with a button to view waifus
+    inline_keyboard = InlineKeyboardMarkup(
         [
-            InlineKeyboardButton(waifu_data['name'], callback_data=f"view_waifu_{waifu_data['id']}")
+            [
+                InlineKeyboardButton("View My Waifus", switch_inline_query_current_chat="view_waifus"),
+            ]
         ]
-        for waifu_data in user_waifus
-    ]
-
-    # Send the inline keyboard with waifu names
-    await message.reply(
-        "Your harem:",
-        reply_markup=InlineKeyboardMarkup(inline_buttons)
     )
 
+    # Send a message with the inline keyboard
+    await message.reply(
+        "Manage your harem:",
+        reply_markup=inline_keyboard
+    )
 
-# Define a callback handler for viewing a specific waifu
-@waifu.on_callback_query(filters.regex(r'^view_waifu_(\d+)$'))
-async def view_waifu_callback(_, callback_query):
-    waifu_id = int(callback_query.matches[0].group(1))
-    waifu = None
+# Handle inline queries for viewing waifus
+@waifu.on_inline_query(filters.regex("^view_waifus$"))
+async def view_waifus_inline_query(_, inline_query):
+    user_waifus = await get_user_waifus(inline_query.from_user.id)
+    results = []
 
-    # Try to find the waifu in the JSON data
-    for waifu_data in waifus_data.get("waifus", []):
-        if waifu_data['id'] == waifu_id:
-            waifu = waifu_data
-            break
-
-    if waifu:
-        # Send the photo and waifu data
-        await callback_query.message.reply_photo(
-            photo=waifu['image_url'],
-            caption=waifu['data']
+    for waifu_data in user_waifus:
+        results.append(
+            InlineQueryResultPhoto(
+                title=waifu_data['name'],
+                photo_url=waifu_data['image_url'],
+                thumb_url=waifu_data['image_url'],
+                caption=waifu_data['data']
+            )
         )
+
+    await inline_query.answer(results, cache_time=0)
