@@ -15,6 +15,8 @@ def insert_waifu_data(user_id, waifu_name, rank, images):
     }
     db.insert_one(waifu_data)
 
+
+
 # Command to add waifu data
 @waifu.on_message(filters.command(["addwaifu"]))
 async def add_new_waifu_command(_, message):
