@@ -7,8 +7,8 @@ async def add_users_to_db(user_id: int):
      db.insert_one(string)
 
 async def get_users_list():
-     list = [x["user_id"] for x in db.find()]
-     return list
+     user_ids = [x.get("user_id") for x in db.find() if "user_id" in x]
+     return user_ids
 
 async def add_waifu_to_db(user_id: int, waifu_name: str):
     user_data = db.find_one({"user_id": user_id})
