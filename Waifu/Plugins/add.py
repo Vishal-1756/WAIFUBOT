@@ -38,11 +38,13 @@ async def fetch_waifu_data(_, message):
     waifus = db.find()  # Retrieve all waifu data from the database
 
     for waifu in waifus:
-        waifu_name = waifu["waifu_name"]
-        rank = waifu["rank"]
-        image_url = waifu["image_url"]
+        if "waifu_name" in waifu and "rank" in waifu and "image_url" in waifu:
+            waifu_name = waifu["waifu_name"]
+            rank = waifu["rank"]
+            image_url = waifu["image_url"]
 
-        caption = f"Name: {waifu_name}\nRank: {rank}"
-        await message.reply_photo(photo=image_url, caption=caption)
-
+            caption = f"Name: {waifu_name}\nRank: {rank}"
+            await message.reply_photo(photo=image_url, caption=caption)
+        else:
+            await message.reply("Waifu data is missing some fields and cannot be displayed.")
 
