@@ -6,45 +6,43 @@ from Waifu import waifu
 
 db = DATABASE["MAIN"]
 
-def insert_waifu_data(user_id, waifu_name, rank, images):
+
+def insert_waifu_data(waifu_name, rank, image_url):
     waifu_data = {
-        "user_id": user_id,
         "waifu_name": waifu_name,
         "rank": rank,
-        "images": images
+        "image_url": image_url
     }
     db.insert_one(waifu_data)
-
-
 
 # Command to add waifu data
 @waifu.on_message(filters.command(["addwaifu"]))
 async def add_new_waifu_command(_, message):
     user_id = message.from_user.id
+    input_text = message.text.split(" ", 1)[1]  # Remove the '/addwaifu' part
 
-    # Ask for the waifu's name
-    await message.reply("Please reply with the name of the waifu:")
-    waifu_name_message = await waifu.listen(message.chat.id)
-    waifu_name = waifu_name_message.text
-
-    # Ask for the waifu's rank
-    await message.reply("Please reply with the rank of the waifu (text or number):")
-    rank_message = await waifu.listen(message.chat.id)
-    rank = rank_message.text
-
-    images = []
-
-    # Ask for image URLs
-    await message.reply("Now, please reply with image URLs one by one. Send 'done' when you're finished.")
-
-    while True:
-        image_url_message = await waifu.listen(message.chat.id)
-        image_url = image_url_message.text
-        if image_url.lower() == "done":
-            break
-        images.append(image_url)
+    # Parse the input for waifu data
+    try:
+        waifu_name, rank, image_url = input_text.split("-", 2)
+    except ValueError:
+        await message.reply("Invalid format. Use /addwaifu waifuname-rank-imageurl")
+        return
 
     # Insert waifu data into the database
-    insert_waifu_data(user_id, waifu_name, rank, images)
+    insert_waifu_data(waifu_name, rank, image_url)
     await message.reply("Waifu data added successfully!")
+
+# Command to fetch waifu data
+@waifu.on_message(filters.command(["fetchwaifu"]))
+async def fetch_waifu_data(_, message):
+    waifus = db.find()  # Retrieve all waifu data from the database
+
+    for waifu in waifus:
+        waifu_name = waifu["waifu_name"]
+        rank = waifu["rank"]
+        image_url = waifu["image_url"]
+
+        caption = f"Name: {waifu_name}\nRank: {rank}"
+        await message.reply_photo(photo=image_url, caption=caption)
+
 
