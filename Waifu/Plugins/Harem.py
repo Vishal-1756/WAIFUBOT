@@ -3,7 +3,6 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InlineQue
 from Waifu import waifu, prefix
 from Waifu.Database.main import get_users_list, add_users_to_db, get_user_waifus
 
-
 @waifu.on_message(filters.command("harem", prefix))
 async def harem_command(_, message):
     user_id = message.from_user.id
@@ -30,10 +29,13 @@ async def harem_command(_, message):
 # Handle inline queries for viewing waifus
 @waifu.on_inline_query(filters.regex("^view_waifus$"))
 async def view_waifus_inline_query(_, inline_query):
-    user_id = inline_query.from_user.id
+    user_id = message.from_user.id
 
     # Fetch waifus for the specific user from the database
     user_waifus = await get_user_waifus(user_id)
+    
+    print(f"DEBUG: User {user_id} waifus: {user_waifus}")
+
     results = []
 
     for waifu in user_waifus:
@@ -50,5 +52,7 @@ async def view_waifus_inline_query(_, inline_query):
                     caption=caption
                 )
             )
+        else:
+            print(f"DEBUG: Invalid waifu data for user {user_id}: {waifu}")
 
     await inline_query.answer(results, cache_time=0)
