@@ -40,3 +40,36 @@ async def on_text_message(_, message: Message):
                 await waifu.send_message(chat_id=message.chat.id, text="Incomplete waifu data. Unable to send.")
         else:
             await waifu.send_message(chat_id=message.chat.id, text="No waifus found in the database.")
+
+
+# Your message handler for the /catch command
+@waifu.on_message(filters.command("catch", prefix) & filters.group)
+async def catch_waifu(_, message):
+    global spawned_waifu_name
+
+    if spawned_waifu_name:
+        query = message.text.split(maxsplit=1)[1]
+
+        # Check if the provided name matches the spawned waifu's name
+        if query.lower() == spawned_waifu_name.lower():
+            image_url = spawned_waifu.get("image_url")
+            rarity = spawned_waifu.get("rarity")
+            waifu_name = spawned_waifu_name
+
+            if image_url and rarity:
+                user_id = message.from_user.id
+
+                # Add the caught waifu to the user's collection
+                await add_waifu_to_db(user_id, waifu_name)
+
+                caption = f"Congratulations! You caught a {rarity} {waifu_name}."
+                await waifu.send_photo(chat_id=message.chat.id, photo=image_url, caption=caption)
+
+                spawned_waifu_name = None  # Reset the spawned waifu name after catching
+            else:
+                await waifu.send_message(chat_id=message.chat.id, text="Incomplete waifu data. Unable to send.")
+        else:
+            await waifu.send_message(chat_id=message.chat.id, text=f"You missed! The spawned waifu's name is {spawned_waifu_name}. Try again.")
+    else:
+        await waifu.send_message(chat_id=message.chat.id, text="No waifu to catch. Wait for a spawned waifu.")
+        
