@@ -25,7 +25,7 @@ async def on_text_message(_, message: Message):
         message_count = 0
 
         # Retrieve a random waifu from the database
-        random_waifu = collection.aggregate([{ "$sample": { "size": 1 } })
+        random_waifu = collection.aggregate([{ "$sample": { "size": 1 } } ])
         spawned_waifu = next(random_waifu, None)
 
         if spawned_waifu:
