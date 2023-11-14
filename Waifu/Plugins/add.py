@@ -5,9 +5,9 @@ from Waifu import waifu
 
 db = DATABASE["MAIN"]
 
-def insert_waifu_data(waifu_name, rarity, image_url, source):
+def insert_waifu_data(name, rarity, image_url, source):
     waifu_data = {
-        "waifu_name": waifu_name,
+        "waifu_name": name,
         "rarity": rarity,
         "image_url": image_url,
         "source": source
@@ -18,20 +18,17 @@ def insert_waifu_data(waifu_name, rarity, image_url, source):
 async def handle_waifu_data(client, message):
     user_id = message.from_user.id
 
-    # Split the message into lines
-    lines = message.text.strip().split('\n')
-
-    if len(lines) != 4:
-        await message.reply("Invalid format. Please provide Name, Image, Rarity, and Source each on a new line.")
+    if len(message.command) != 1:
+        await message.reply("Invalid format. Please provide only one command, and include the details as separate text in the following format:\n\nName: [waifu name]\nImage: [image URL]\nRarity: [rarity]\nSource: [source text]")
         return
 
-    # Parse the lines
-    waifu_name = lines[0].strip().replace("Name:", "")
-    image_url = lines[1].strip().replace("Image:", "")
-    rarity = lines[2].strip().replace("Rarity:", "")
-    source = lines[3].strip().replace("Source:", "")
+    text = message.text
+    name = text.split("Name:")[1].split("Image:")[0].strip()
+    image = text.split("Image:")[1].split("Rarity:")[0].strip()
+    rarity = text.split("Rarity:")[1].split("Source:")[0].strip()
+    source = text.split("Source:")[1].strip()
 
-    insert_waifu_data(waifu_name, rarity, image_url, source)
+    insert_waifu_data(name, rarity, image, source)
     await message.reply("Waifu data added successfully!")
 
 @waifu.on_message(filters.command("fetchwaifu"))
