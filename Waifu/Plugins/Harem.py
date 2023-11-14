@@ -1,18 +1,14 @@
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InlineQueryResultPhoto
 from Waifu import waifu, prefix
-from Waifu.Database.main import get_users_list, add_waifu_to_db, get_user_waifus
-import json
+from Waifu.Database.main import get_users_list, add_users_to_db, get_user_waifus
 
-# Load waifu data from the JSON file
-with open("waifu.json", "r") as file:
-    waifus = json.load(file)["waifus"]
 
 @waifu.on_message(filters.command("harem", prefix))
 async def harem_command(_, message):
     user_id = message.from_user.id
 
-    # Check if the user is in the database and add them if not (you'll need to implement these functions)
+    # Check if the user is in the database and add them if not
     if user_id not in await get_users_list():
         await add_users_to_db(user_id)
 
@@ -34,10 +30,13 @@ async def harem_command(_, message):
 # Handle inline queries for viewing waifus
 @waifu.on_inline_query(filters.regex("^view_waifus$"))
 async def view_waifus_inline_query(_, inline_query):
-    user_waifus = await get_user_waifus(inline_query.from_user.id)
+    user_id = inline_query.from_user.id
+
+    # Fetch waifus for the specific user from the database
+    user_waifus = await get_user_waifus(user_id)
     results = []
 
-    for waifu in waifus:
+    for waifu in user_waifus:
         title = waifu['name']
         photo_url = waifu['image']
         caption = waifu['rank']
