@@ -1,5 +1,5 @@
 import random
-from pyrogram import filters
+from pyrogram import filters, Client
 from pyrogram.types import Message
 from Waifu.Database.main import add_waifu_to_db
 from Waifu import waifu, prefix
@@ -11,11 +11,11 @@ collection = db["waifus"]
 # Variable to store the name of the spawned waifu
 spawned_waifu_name = None
 
-# Counter to track the number of messages in the group
-message_count = 0
-
 # Global variable to store the spawned waifu
 spawned_waifu = None
+
+# Counter to track the number of messages in the group
+message_count = 0
 
 # Your message handler for text messages in groups
 @waifu.on_message(filters.text & filters.group)
