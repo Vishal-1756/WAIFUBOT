@@ -29,7 +29,7 @@ async def harem_command(_, message):
 # Handle inline queries for viewing waifus
 @waifu.on_inline_query(filters.regex("^view_waifus$"))
 async def view_waifus_inline_query(_, inline_query):
-    user_id = message.from_user.id
+    user_id = inline_query.from_user.id
 
     # Fetch waifus for the specific user from the database
     user_waifus = await get_user_waifus(user_id)
