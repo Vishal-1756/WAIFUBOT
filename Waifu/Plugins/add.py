@@ -23,7 +23,7 @@ async def add_new_waifu_command(_, message):
     await message.reply("Please enter waifu data in the format: Name: Image: Rarity: Source")
 
 # Filter to handle the user's response
-@waifu.on_message(filters.user & filters.reply(message))
+@waifu.on_message(filters.user & filters.reply & filters.text)
 async def handle_waifu_data(_, message):
     user_id = message.from_user.id
     text = message.text.strip()
