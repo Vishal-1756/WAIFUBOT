@@ -19,19 +19,29 @@ def insert_waifu_data(waifu_name, rarity, image_url, source):
 @waifu.on_message(filters.command(["addwaifu"]))
 async def add_new_waifu_command(_, message):
     user_id = message.from_user.id
-    input_text = message.text.split(" ", 1)[1]  # Remove the '/addwaifu' part
 
-    # Parse the input for waifu data
-    try:
-        data = input_text.split(":")
-        if len(data) == 4:
-            waifu_name, image_url, rarity, source = map(str.strip, data)
-            insert_waifu_data(waifu_name, rarity, image_url, source)
-            await message.reply("Waifu data added successfully!")
-        else:
-            await message.reply("Invalid format. Use /addwaifu Name: Image: Rarity: Source")
-    except ValueError:
-        await message.reply("Invalid format. Use /addwaifu Name: Image: Rarity: Source")
+    await message.reply("Please enter waifu data in the format: Name: Image: Rarity: Source")
+
+# Filter to handle the user's response
+@waifu.on_message(filters.user & filters.reply(message))
+async def handle_waifu_data(_, message):
+    user_id = message.from_user.id
+    text = message.text.strip()
+    
+    if not text.startswith("Name: Image: Rarity: Source: "):
+        await message.reply("Invalid format. Please use the format: Name: Image: Rarity: Source")
+        return
+
+    # Parse waifu data
+    data = text.split(": ")
+    if len(data) == 4:
+        waifu_name, image_url, rarity, source = map(str.strip, data)
+
+        # Insert waifu data into the database
+        insert_waifu_data(waifu_name, rarity, image_url, source)
+        await message.reply("Waifu data added successfully!")
+    else:
+        await message.reply("Invalid format. Please use the format: Name: Image: Rarity: Source")
 
 # Command to fetch waifu data
 @waifu.on_message(filters.command(["fetchwaifu"]))
