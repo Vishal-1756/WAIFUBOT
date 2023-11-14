@@ -22,6 +22,6 @@ async def add_waifu_to_db(user_id: int, waifu_name: str):
 async def get_user_waifus(user_id: int):
     user_data = db.find_one({"user_id": user_id})
     if user_data:
-        return [{"name": waifu_name, "rank": "No Rank", "id": "No Id", "source": "No Source"} for waifu_name in user_data.get("waifus", [])]
+        return [{"name": waifu_name, "rarity": rarity, "id": special_id, "source": source} for waifu_name in user_data.get("waifus", [])]
     else:
         return []
