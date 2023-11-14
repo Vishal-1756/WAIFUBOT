@@ -2,9 +2,10 @@ from Waifu import DATABASE
 from pyrogram import filters
 from Waifu import waifu
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 
 db = DATABASE["MAIN"]
-collection = db["waifus"]  # Replace "waifus" with your actual collection name
+collection = db["waifus"]
 
 @waifu.on_message(filters.command("addwaifu"))
 async def start_add_waifu(_, message):
@@ -19,8 +20,8 @@ async def add_waifu_detail(_, message):
         "image_url": match.group(2),
         "source": match.group(4)
     }
-    collection.insert_one(waifu_data)  # Use insert_one on the collection
-    await message.reply("Waifu data added successfully!")
+    inserted_id = collection.insert_one(waifu_data).inserted_id  # Get the inserted ID
+    await message.reply(f"Waifu data added with ID: {str(inserted_id)}")
 
 @waifu.on_message(filters.command("fetchwaifu"))
 async def fetch_waifu_data(_, message):
@@ -32,8 +33,8 @@ async def fetch_waifu_data(_, message):
             rarity = waifu["rarity"]
             image_url = waifu["image_url"]
             source = waifu["source"]
-
-            caption = f"Name: {waifu_name}\nImage: {image_url}\nRarity: {rarity}\nSource: {source}"
+            waifu_id = waifu["_id"]  # Get the waifu's ID
+            caption = f"ID: {str(waifu_id)}\nName: {waifu_name}\nImage: {image_url}\nRarity: {rarity}\nSource: {source}"
             await message.reply_photo(photo=image_url, caption=caption)
         else:
             await message.reply("Waifu data is missing some fields and cannot be displayed.")
