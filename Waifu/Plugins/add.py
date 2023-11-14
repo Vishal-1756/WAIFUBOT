@@ -6,6 +6,8 @@ from Waifu import waifu
 
 db = DATABASE["MAIN"]
 
+waifu_data = {}  # Store waifu data temporarily
+
 def insert_waifu_data(waifu_name, rarity, image_url, source):
     waifu_data = {
         "waifu_name": waifu_name,
@@ -15,22 +17,36 @@ def insert_waifu_data(waifu_name, rarity, image_url, source):
     }
     db.insert_one(waifu_data)
 
-# Command to add waifu data
+# Command to add waifu data step by step
 @waifu.on_message(filters.command(["addwaifu"]))
-async def add_new_waifu_command(_, message):
-    user_id = message.from_user.id
-    input_text = message.text.split(" ", 1)[1]  # Remove the '/addwaifu' part
+async def add_new_waifu_command_1(_, message):
+    await message.reply("Please enter the waifu's Name:")
+    waifu_data["user_id"] = message.from_user.id
+    waifu_data["message_id"] = message.message_id
+    waifu_data["step"] = 1
 
-    # Parse the input for waifu data
-    try:
-        waifu_name, rarity, image_url, source = input_text.split("-", 3)
-    except ValueError:
-        await message.reply("Invalid format. Use /addwaifu waifuname-rarity-imageurl-source")
-        return
+# Filter to handle the next user message
+@waifu.on_message(filters.user(waifu_data["user_id"]) & filters.reply(waifu_data["message_id"]) & filters.text)
+async def add_new_waifu_command_2(_, message):
+    user_id = waifu_data["user_id"]
+    step = waifu_data["step"]
 
-    # Insert waifu data into the database
-    insert_waifu_data(waifu_name, rarity, image_url, source)
-    await message.reply("Waifu data added successfully!")
+    if step == 1:
+        waifu_data["waifu_name"] = message.text
+        await message.reply("Please enter the Rarity:")
+        waifu_data["step"] = 2
+    elif step == 2:
+        waifu_data["rarity"] = message.text
+        await message.reply("Please enter the Image URL:")
+        waifu_data["step"] = 3
+    elif step == 3:
+        waifu_data["image_url"] = message.text
+        await message.reply("Please enter the Source:")
+        waifu_data["step"] = 4
+    elif step == 4:
+        waifu_data["source"] = message.text
+        insert_waifu_data(waifu_data["waifu_name"], waifu_data["rarity"], waifu_data["image_url"], waifu_data["source"])
+        await message.reply("Waifu data added successfully!")
 
 # Command to fetch waifu data
 @waifu.on_message(filters.command(["fetchwaifu"]))
