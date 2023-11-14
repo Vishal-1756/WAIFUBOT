@@ -1,39 +1,30 @@
 from Waifu import DATABASE
 from pyrogram import filters
-from pymongo import MongoClient
 from Waifu import waifu
+from pymongo import MongoClient
 
 db = DATABASE["MAIN"]
-
-def insert_waifu_data(name, rarity, image_url, source):
-    waifu_data = {
-        "waifu_name": name,
-        "rarity": rarity,
-        "image_url": image_url,
-        "source": source
-    }
-    db.insert_one(waifu_data)
+collection = db["waifus"]  # Replace "waifus" with your actual collection name
 
 @waifu.on_message(filters.command("addwaifu"))
-async def handle_waifu_data(client, message):
-    user_id = message.from_user.id
+async def start_add_waifu(_, message):
+    await message.reply("Please provide the waifu details in the following format:\n\nName: [waifu name]\nImage: [image URL]\nRarity: [rarity]\nSource: [source text]")
 
-    if len(message.command) != 1:
-        await message.reply("Invalid format. Please provide only one command, and include the details as separate text in the following format:\n\nName: [waifu name]\nImage: [image URL]\nRarity: [rarity]\nSource: [source text]")
-        return
-
-    text = message.text
-    name = text.split("Name:")[1].split("Image:")[0].strip()
-    image = text.split("Image:")[1].split("Rarity:")[0].strip()
-    rarity = text.split("Rarity:")[1].split("Source:")[0].strip()
-    source = text.split("Source:")[1].strip()
-
-    insert_waifu_data(name, rarity, image, source)
+@waifu.on_message(filters.regex(r"Name: (.+)\nImage: (.+)\nRarity: (.+)\nSource: (.+)"))
+async def add_waifu_detail(_, message):
+    match = message.matches[0]
+    waifu_data = {
+        "waifu_name": match.group(1),
+        "rarity": match.group(3),
+        "image_url": match.group(2),
+        "source": match.group(4)
+    }
+    collection.insert_one(waifu_data)  # Use insert_one on the collection
     await message.reply("Waifu data added successfully!")
 
 @waifu.on_message(filters.command("fetchwaifu"))
 async def fetch_waifu_data(_, message):
-    waifus = db.find()
+    waifus = collection.find()
 
     for waifu in waifus:
         if "waifu_name" in waifu and "rarity" in waifu and "image_url" in waifu and "source" in waifu:
@@ -41,7 +32,8 @@ async def fetch_waifu_data(_, message):
             rarity = waifu["rarity"]
             image_url = waifu["image_url"]
             source = waifu["source"]
-            caption = f"Name: {waifu_name}\nRarity: {rarity}\nSource: {source}"
+
+            caption = f"Name: {waifu_name}\nImage: {image_url}\nRarity: {rarity}\nSource: {source}"
             await message.reply_photo(photo=image_url, caption=caption)
         else:
             await message.reply("Waifu data is missing some fields and cannot be displayed.")
