@@ -37,17 +37,18 @@ async def view_waifus_inline_query(_, inline_query):
     results = []
 
     for waifu in user_waifus:
-        title = waifu['name']
-        photo_url = waifu['image']
-        caption = waifu['rank']
-        
-        results.append(
-            InlineQueryResultPhoto(
-                title=title,
-                photo_url=photo_url,
-                thumb_url=photo_url,
-                caption=caption
+        if isinstance(waifu, dict):  # Check if waifu is a dictionary
+            title = waifu.get('name', 'No Name')
+            photo_url = waifu.get('image', '')
+            caption = waifu.get('rank', '')
+            
+            results.append(
+                InlineQueryResultPhoto(
+                    title=title,
+                    photo_url=photo_url,
+                    thumb_url=photo_url,
+                    caption=caption
+                )
             )
-        )
 
     await inline_query.answer(results, cache_time=0)
