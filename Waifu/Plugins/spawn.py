@@ -45,7 +45,7 @@ async def on_text_message(_, message: Message):
             await waifu.send_message(chat_id=message.chat.id, text="No waifus found in the database.")
 
 # Your message handler for the /catch command
-@waifu.on_message(filters.command("catch"))
+@waifu.on_message(filters.command("catch") & filters.group)
 async def catch_waifu(_, message):
     global spawned_waifu_name, spawned_waifu
 
