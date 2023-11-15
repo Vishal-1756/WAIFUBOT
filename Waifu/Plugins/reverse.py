@@ -23,8 +23,10 @@ async def Sauce(bot_token, file_id):
     }
 
     # Google Search
-    for similar_image in soup.find_all('input', {'class': 'gLFyf'}):
-        result['similar_google'] = f"https://www.google.com/search?tbm=isch&q={quote_plus(similar_image.get('value'))}"
+    for similar_image in soup.find_all('a', {'class': 'iu-card-header'}):
+        if 'href' in similar_image.attrs:
+            result['similar_google'] = f"https://www.google.com{similar_image['href']}"
+            break
 
     for best in soup.find_all('div', {'class': 'r5a77d'}):
         output = best.get_text()
@@ -37,6 +39,7 @@ async def Sauce(bot_token, file_id):
     result['output_saucenao'] = saucenao_result.get('output', '')
 
     return result
+
 
 
 async def SauceNAO(file_id):
