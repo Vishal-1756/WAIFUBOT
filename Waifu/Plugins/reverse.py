@@ -1,38 +1,67 @@
-from pyrogram import filters
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+import requests
+from urllib.parse import quote_plus
 from bs4 import BeautifulSoup
 from unidecode import unidecode
-import requests
-
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from Waifu import waifu as app
 from Waifu import bot_token
 
 async def Sauce(bot_token, file_id):
     r = requests.post(f'https://api.telegram.org/bot{bot_token}/getFile?file_id={file_id}').json()
     file_path = r['result']['file_path']
-    headers = {
-        'User-agent': 'Mozilla/5.0 (Linux; Android 6.0.1; SM-G920V Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.98 Mobile Safari/537.36'
-    }
+    headers = {'User-agent': 'Mozilla/5.0 (Linux; Android 6.0.1; SM-G920V Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.98 Mobile Safari/537.36'}
     to_parse = f"https://images.google.com/searchbyimage?safe=off&sbisrc=tg&image_url=https://api.telegram.org/file/bot{bot_token}/{file_path}"
     r = requests.get(to_parse, headers=headers)
     soup = BeautifulSoup(r.text, 'html.parser')
+    
     result = {
-        "similar": '',
-        'output': ''
+        "similar_google": '',
+        'output_google': '',
+        "similar_saucenao": '',
+        'output_saucenao': ''
     }
 
-    # Extract the similar image link
-    similar_link_tag = soup.find('a', {'class': 'irc_mimg irc_but_r'})
-    if similar_link_tag:
-        result['similar'] = similar_link_tag['href']
+    # Google Search
+    for similar_image in soup.find_all('input', {'class': 'gLFyf'}):
+        url = f"https://www.google.com/search?tbm=isch&q={quote_plus(similar_image.get('value'))}"
+        result['similar_google'] = url
 
-    # Extract the best guess text
-    best_guess_tag = soup.find('div', {'class': 'BNeawe iBp4i AP7Wnd'})
-    if best_guess_tag:
-        result["output"] = unidecode(best_guess_tag.get_text())
+    for best in soup.find_all('div', {'class': 'r5a77d'}):
+        output = best.get_text()
+        decoded_text = unidecode(output)
+        result["output_google"] = decoded_text
+
+    # SauceNAO Search
+    saucenao_result = await SauceNAO(file_id)
+    result['similar_saucenao'] = saucenao_result.get('similar', '')
+    result['output_saucenao'] = saucenao_result.get('output', '')
 
     return result
 
+async def SauceNAO(file_id):
+    file_url = f"https://api.telegram.org/bot{bot_token}/getFile?file_id={file_id}"
+    r = requests.post(file_url).json()
+    file_path = r['result']['file_path']
+    image_url = f"https://api.telegram.org/file/bot{bot_token}/{file_path}"
+
+    saucenao_url = "https://saucenao.com/search.php"
+    params = {
+        'output_type': 2,
+        'numres': 1,
+        'url': image_url
+    }
+
+    response = requests.post(saucenao_url, data=params)
+    if response.status_code == 200:
+        result = response.json()
+        if 'results' in result and result['results']:
+            best_match = result['results'][0]
+            return {
+                'similar': best_match['data']['ext_urls'][0] if 'ext_urls' in best_match['data'] else '',
+                'output': best_match['data']['title'] if 'title' in best_match['data'] else ''
+            }
+
+    return {'similar': '', 'output': ''}
 
 async def get_file_id_from_message(msg):
     file_id = None
@@ -69,34 +98,23 @@ async def get_file_id_from_message(msg):
         file_id = message.video.thumbs[0].file_id
     return file_id
 
-
 @app.on_message(filters.command(["pp", "grs", "reverse", "r"]) & filters.group)
 async def _reverse(_, msg):
     text = await msg.reply("** wait a sec...**")
     file_id = await get_file_id_from_message(msg)
     if not file_id:
         return await text.edit("**reply to media!**")
-    await text.edit("** Searching in Google....**")
+    await text.edit("** Searching in Google and SauceNAO....**")
     result = await Sauce(bot_token, file_id)
-    if not result["output"]:
+
+    if not result["output_google"] and not result["output_saucenao"]:
         return await text.edit("Couldn't find anything")
 
-    reply_text = f'[{result["output"]}]({result["similar"]})' if result["similar"] else f'[{result["output"]}]'
-    reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton("Visit Site", url=result["similar"])]]) if result["similar"] else None
+    reply_text = f'Google: [{result["output_google"]}]({result["similar_google"]})\n\nSauceNAO: [{result["output_saucenao"]}]({result["similar_saucenao"]})'
+    reply_markup = InlineKeyboardMarkup([
+        [InlineKeyboardButton("Visit Google", url=result["similar_google"])],
+        [InlineKeyboardButton("Visit SauceNAO", url=result["similar_saucenao"])]
+    ])
+    
     await text.edit(reply_text, reply_markup=reply_markup)
 
-
-@app.on_message(filters.command(["pp", "grs", "reverse", "r"]) & filters.private)
-async def ppsearch(_, msg):
-    text = await msg.reply("** wait a sec...**")
-    file_id = await get_file_id_from_message(msg)
-    if not file_id:
-        return await text.edit("**reply to media!**")
-    await text.edit("** Searching in Google....**")
-    result = await Sauce(bot_token, file_id)
-    if not result["output"]:
-        return await text.edit("Couldn't find anything")
-
-    reply_text = f'[{result["output"]}]({result["similar"]})' if result["similar"] else f'[{result["output"]}]'
-    reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton("Visit Site", url=result["similar"])]]) if result["similar"] else None
-    await text.edit(reply_text, reply_markup=reply_markup)
