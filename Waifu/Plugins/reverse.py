@@ -8,14 +8,17 @@ from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from pyrogram.enums import ParseMode
 
+BASE_URL = "https://api.telegram.org/bot{}"
+
 async def Sauce(bot_token, file_id):
-    r = requests.post(f'https://api.telegram.org/bot{bot_token}/getFile?file_id={file_id}').json()
+    file_url = f"{BASE_URL}/getFile?file_id={file_id}"
+    r = requests.post(file_url).json()
     file_path = r['result']['file_path']
     headers = {'User-agent': 'Mozilla/5.0 (Linux; Android 6.0.1; SM-G920V Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.98 Mobile Safari/537.36'}
-    to_parse = f"https://images.google.com/searchbyimage?safe=off&sbisrc=tg&image_url=https://api.telegram.org/file/bot{bot_token}/{file_path}"
+    to_parse = f"https://images.google.com/searchbyimage?safe=off&sbisrc=tg&image_url={BASE_URL}/file/{bot_token}/{file_path}"
     r = requests.get(to_parse, headers=headers)
     soup = BeautifulSoup(r.text, 'html.parser')
-    
+
     result = {
         "similar_google": [],
         'output_google': '',
