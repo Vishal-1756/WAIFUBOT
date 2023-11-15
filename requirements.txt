@@ -9,3 +9,5 @@ secureme
 wget 
 httpx
 google-reverse-search
+beautifulsoup4 
+unidecode
