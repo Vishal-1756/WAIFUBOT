@@ -76,8 +76,11 @@ async def _reverse(_,msg):
       result = await Sauce(bot_token,file_id)
       if not result["output"]:
           return await text.edit("Couldn't find anything")
-      await text.edit(f'[{result["output"]}]({result["similar"]})\n\n**Providers**:- @Ikaris0_0',reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Visit Site",url=result["similar"])]]))
- 
+      if result["similar"]:
+          await text.edit(f'[{result["output"]}]({result["similar"]})\n\n**Providers**:- @Ikaris0_0', reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Visit Site", url=result["similar"])]]))
+      else:
+          await text.edit(f'[{result["output"]}]')
+
  
 @app.on_message(filters.command(["pp","grs","reverse","r"]) & filters.private)
 async def ppsearch(_,msg):
@@ -89,8 +92,10 @@ async def ppsearch(_,msg):
       result = await Sauce(bot_token,file_id)
       if not result["output"]:
           return await text.edit("Couldn't find anything")
-      await text.edit(f'[{result["output"]}]({result["similar"]})\n\n**Providers**:- @Ikaris0_0',reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Visit Site",url=result["similar"])]]))
-   
+      if result["similar"]:
+          await text.edit(f'[{result["output"]}]({result["similar"]})\n\n**Providers**:- @Ikaris0_0', reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Visit Site", url=result["similar"])]]))
+      else:
+          await text.edit(f'[{result["output"]}]')
  
                       
  
