@@ -1,7 +1,7 @@
 import requests
 from pyrogram import filters, Client
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
-
+from pyrogram.enums import ParseMode
 from Waifu import waifu as pbot
 from Waifu import bot_token as TOKEN
 
@@ -46,13 +46,13 @@ async def get_file_id_from_message(message: Message):
 
 @pbot.on_message(filters.command(["pp", "grs", "reverse"]))
 async def reverse(client: Client, message: Message):
-    text = await message.reply_text("```Parsing Media...```", parse_mode="markdown")
+    text = await message.reply_text("```Parsing Media...```", parse_mode=ParseMode.MARKDOWN)
     file_id = await get_file_id_from_message(message)
     if not file_id:
         return await text.edit(
-            "Reply to a Photo or sticker", parse_mode="markdown"
+            "Reply to a Photo or sticker", parse_mode=ParseMode.MARKDOWN
         )
-    await text.edit("```Searching...```", parse_mode="markdown")
+    await text.edit("```Searching...```", parse_mode=ParseMode.MARKDOWN)
 
     r = requests.post(
         f"https://api.telegram.org/bot{TOKEN}/getFile?file_id={file_id}"
@@ -76,15 +76,15 @@ async def reverse(client: Client, message: Message):
         )
     elif response.status_code == 401:
         return await text.edit(
-            "```Couldn't find anything```", parse_mode="markdown"
+            "```Couldn't find anything```", parse_mode=ParseMode.MARKDOWN
         )
     elif response.status_code == 402:
         return await text.edit(
-            "```Failed to reverse image```", parse_mode="markdown"
+            "```Failed to reverse image```", parse_mode=ParseMode.MARKDOWN
         )
     elif response.status_code <= 500:
-        return await text.edit("```Error in API```", parse_mode="markdown")
+        return await text.edit("```Error in API```", parse_mode=ParseMode.MARKDOWN)
     else:
         return await text.edit(
-            "```Unknown Error Occurred```", parse_mode="markdown"
+            "```Unknown Error Occurred```", parse_mode=ParseMode.MARKDOWN
   )
