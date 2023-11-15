@@ -32,7 +32,7 @@ async def Sauce(bot_token, file_id):
     if best_guess_div:
         output = best_guess_div.get_text()
         decoded_text = unidecode(output)
-        result["output_google"] = f"{decoded_text} - [Google Image Search](to_parse)"
+        result["output_google"] = f"[{decoded_text} - Google Image Search](to_parse)"
 
     return result, to_parse
 
