@@ -8,3 +8,4 @@ motor
 secureme
 wget 
 httpx
+google-reverse-search
