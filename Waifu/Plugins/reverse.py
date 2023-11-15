@@ -113,10 +113,8 @@ async def _reverse(_, msg):
         return await text.edit("Couldn't find anything")
 
     reply_text = (
-        f'Google: {result["output_google"]}\n{result["similar_google"]}\n\n'
-        f'SauceNAO: {result["output_saucenao"]}\n{result["similar_saucenao"]}'
+        f'Google: {result["output_google"]}\n[Similar Images]({result["similar_google"]})\n\n'
+        f'SauceNAO: {result["output_saucenao"]}\n[Similar Images]({result["similar_saucenao"]})'
     )
 
     await text.edit(reply_text)
-
-
