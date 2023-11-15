@@ -41,6 +41,8 @@ async def Sauce(bot_token, file_id):
 
     return result
 
+import json
+
 async def SauceNAO(file_id):
     file_url = f"https://api.telegram.org/bot{bot_token}/getFile?file_id={file_id}"
     r = requests.post(file_url).json()
@@ -57,18 +59,19 @@ async def SauceNAO(file_id):
     try:
         response = requests.post(saucenao_url, data=params)
         if response.status_code == 200:
-            result = response.json()
+            result = json.loads(response.text)
             if 'results' in result and result['results']:
                 best_match = result['results'][0]
-                similar = best_match['data']['ext_urls'][0] if 'ext_urls' in best_match['data'] else ''
+                similar_links = best_match['data']['ext_urls'] if 'ext_urls' in best_match['data'] else []
                 output = best_match['data']['title'] if 'title' in best_match['data'] else ''
-                print(f"SauceNAO - Similar: {similar}, Output: {output}")
-                return {'similar': similar, 'output': output}
+                print(f"SauceNAO - Similar Links: {similar_links}, Output: {output}")
+                return {'similar': similar_links, 'output': output}
     except Exception as e:
         print(f"SauceNAO - Exception: {e}")
 
     print("SauceNAO - No results found or error occurred.")
-    return {'similar': '', 'output': ''}
+    return {'similar': [], 'output': ''}
+
 
 
 
