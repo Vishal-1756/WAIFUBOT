@@ -3,7 +3,8 @@ from pyrogram import filters, client  # Pyrogram v2.0 and up
 from pyrogram.enums import ParseMode
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 
-from Waifu import waifu as pbot, TOKEN
+from Waifu import waifu as pbot
+from Waifu import bot_token as TOKEN
 
 API_URL = "https://gglimg.vercel.app/reverse"
 
