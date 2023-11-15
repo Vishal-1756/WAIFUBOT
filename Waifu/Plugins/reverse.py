@@ -1,8 +1,7 @@
 import requests
-from urllib.parse import quote_plus
+from urllib.parse import quote_plus, unquote
 from bs4 import BeautifulSoup
 from unidecode import unidecode
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from Waifu import waifu as app
 from Waifu import bot_token
 from pyrogram import filters
@@ -16,21 +15,18 @@ async def Sauce(bot_token, file_id):
     soup = BeautifulSoup(r.text, 'html.parser')
     
     result = {
-        "similar_google": '',
+        "similar_google": [],
         'output_google': '',
         "similar_saucenao": '',
         'output_saucenao': ''
     }
 
     # Google Search
-    for similar_image in soup.find_all('input', {'class': 'gLFyf'}):
-        url = f"https://www.google.com/search?tbm=isch&q={quote_plus(similar_image.get('value'))}"
-        result['similar_google'] = url
-
-    # Find the link to the similar images page
-    similar_images_link = soup.find('a', {'class': 'BVG0Nb'})  # Adjust the class based on your page structure
-    if similar_images_link:
-        result['similar_google'] = f"https://www.google.com{similar_images_link['href']}"
+    similar_images_div = soup.find('div', {'class': 'RAyV4b'})
+    if similar_images_div:
+        for similar_images_link in similar_images_div.find_all('a'):
+            url = f"https://www.google.com{similar_images_link['href']}"
+            result['similar_google'].append(url)
 
     for best in soup.find_all('div', {'class': 'r5a77d'}):
         output = best.get_text()
@@ -43,11 +39,6 @@ async def Sauce(bot_token, file_id):
     result['output_saucenao'] = saucenao_result.get('output', '')
 
     return result
-
-# Rest of your code remains the same...
-
-
-
 
 async def SauceNAO(file_id):
     file_url = f"https://api.telegram.org/bot{bot_token}/getFile?file_id={file_id}"
