@@ -6,6 +6,7 @@ from Waifu import waifu as app
 from Waifu import bot_token
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from pyrogram.enums import ParseMode
 
 async def Sauce(bot_token, file_id):
     r = requests.post(f'https://api.telegram.org/bot{bot_token}/getFile?file_id={file_id}').json()
@@ -97,4 +98,4 @@ async def _reverse(_, msg):
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    await text.edit_text(reply_text, reply_markup=reply_markup, parse_mode='markdown')
+    await text.edit_text(reply_text, reply_markup=reply_markup, parse_mode=ParseMode.MARKDOWN)
