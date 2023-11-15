@@ -73,8 +73,6 @@ async def SauceNAO(file_id):
     return {'similar': [], 'output': ''}
 
 
-
-
 async def get_file_id_from_message(msg):
     file_id = None
     message = msg.reply_to_message
