@@ -11,29 +11,29 @@ from pyrogram.types import *
 async def Sauce(bot_token, file_id):
     r = requests.post(f'https://api.telegram.org/bot{bot_token}/getFile?file_id={file_id}').json()
     file_path = r['result']['file_path']
-    headers = {'User-agent': 'Mozilla/5.0 (Linux; Android 6.0.1; SM-G920V Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.98 Mobile Safari/537.36'}
+    headers = {
+        'User-agent': 'Mozilla/5.0 (Linux; Android 6.0.1; SM-G920V Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.98 Mobile Safari/537.36'
+    }
     to_parse = f"https://images.google.com/searchbyimage?safe=off&sbisrc=tg&image_url=https://api.telegram.org/file/bot{bot_token}/{file_path}"
     r = requests.get(to_parse, headers=headers)
     soup = BeautifulSoup(r.text, 'html.parser')
-
     result = {
         "similar": '',
         'output': ''
     }
 
-    # Extracting the best guess
-    best_guess = soup.find('a', {'class': 'BVG0Nb'})
-    if best_guess:
-        result['output'] = best_guess.text.strip()
+    # Extract the similar image link
+    similar_link_tag = soup.find('a', {'class': 'irc_mimg irc_but_r'})
+    if similar_link_tag:
+        result['similar'] = similar_link_tag['href']
 
-    # Extracting the similar images link
-    search_by_image_div = soup.find('div', {'class': 'r5a77d'})
-    if search_by_image_div:
-        search_by_image_link = search_by_image_div.find('a', recursive=False)
-        if search_by_image_link and search_by_image_link.get('href'):
-            result['similar'] = 'https://www.google.com' + search_by_image_link['href']
+    # Extract the best guess text
+    best_guess_tag = soup.find('div', {'class': 'BNeawe iBp4i AP7Wnd'})
+    if best_guess_tag:
+        result["output"] = unidecode(best_guess_tag.get_text())
 
     return result
+
 
 
 async def get_file_id_from_message(msg):
