@@ -1,12 +1,10 @@
 import requests
 from pyrogram import filters, Client
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
-from pyrogram.enums import ParseMode
 from Waifu import waifu as pbot
 from Waifu import bot_token as TOKEN
 
 API_URL = "https://gglimg.vercel.app/reverse"
-
 
 async def get_file_id_from_message(message: Message):
     file_id = None
@@ -43,16 +41,13 @@ async def get_file_id_from_message(message: Message):
         file_id = message.video.thumbs[0].file_id
     return file_id
 
-
 @pbot.on_message(filters.command(["pp", "grs", "reverse"]))
 async def reverse(client: Client, message: Message):
-    text = await message.reply_text("```Parsing Media...```", parse_mode=ParseMode.MARKDOWN)
+    text = await message.reply_text("`Parsing Media...`")  # Simple text
     file_id = await get_file_id_from_message(message)
     if not file_id:
-        return await text.edit(
-            "Reply to a Photo or sticker", parse_mode=ParseMode.MARKDOWN
-        )
-    await text.edit("```Searching...```", parse_mode=ParseMode.MARKDOWN)
+        return await text.edit("`Reply to a Photo or sticker`")  # Simple text
+    await text.edit("`Searching...`")  # Simple text
 
     r = requests.post(
         f"https://api.telegram.org/bot{TOKEN}/getFile?file_id={file_id}"
@@ -68,23 +63,16 @@ async def reverse(client: Client, message: Message):
     if response.status_code == 200:
         result = response.json()["data"]
         return await text.edit(
-            f'Sauce: ```{result["output"]}```',
-            parse_mode="markdown",
+            f'Sauce: {result["output"]}',  # Simple text
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton("Link", url=result["similar"])]]
             ),
         )
     elif response.status_code == 401:
-        return await text.edit(
-            "```Couldn't find anything```", parse_mode=ParseMode.MARKDOWN
-        )
+        return await text.edit("`Couldn't find anything`")  # Simple text
     elif response.status_code == 402:
-        return await text.edit(
-            "```Failed to reverse image```", parse_mode=ParseMode.MARKDOWN
-        )
+        return await text.edit("`Failed to reverse image`")  # Simple text
     elif response.status_code <= 500:
-        return await text.edit("```Error in API```", parse_mode=ParseMode.MARKDOWN)
+        return await text.edit("`Error in API`")  # Simple text
     else:
-        return await text.edit(
-            "```Unknown Error Occurred```", parse_mode=ParseMode.MARKDOWN
-  )
+        return await text.edit("`Unknown Error Occurred`")  # Simple text
