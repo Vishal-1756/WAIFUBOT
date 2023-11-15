@@ -18,8 +18,6 @@ async def Sauce(bot_token, file_id):
     result = {
         "similar_google": [],
         'output_google': '',
-        "similar_saucenao": '',
-        'output_saucenao': ''
     }
 
     # Google Search
@@ -35,7 +33,7 @@ async def Sauce(bot_token, file_id):
         decoded_text = unidecode(output)
         result["output_google"] = f"{decoded_text} - Google Image Search: {to_parse}"
 
-    return result
+    return result, to_parse
 
 async def get_file_id_from_message(msg):
     file_id = None
@@ -80,7 +78,7 @@ async def _reverse(_, msg):
         return await text.edit("`Dear Pro People's Please Reply To A Media File 🗃️`")
     
     await text.edit("`🌐 Wait For >1 Min Searching Your Prompt`")
-    result = await Sauce(bot_token, file_id)
+    result, to_parse = await Sauce(bot_token, file_id)
 
     if not result["output_google"]:
         return await text.edit("`😅 Ntg Found On Google Buddy`")
