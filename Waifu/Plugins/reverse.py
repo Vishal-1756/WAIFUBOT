@@ -5,6 +5,7 @@ from unidecode import unidecode
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from Waifu import waifu as app
 from Waifu import bot_token
+from pyrogram import filters
 
 async def Sauce(bot_token, file_id):
     r = requests.post(f'https://api.telegram.org/bot{bot_token}/getFile?file_id={file_id}').json()
