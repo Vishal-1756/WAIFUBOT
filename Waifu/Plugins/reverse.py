@@ -1,11 +1,11 @@
-from Waifu import waifu as app
-from Waifu import bot_token
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-import requests
-from urllib.parse import quote_plus
 from bs4 import BeautifulSoup
 from unidecode import unidecode
+import requests
+
+from Waifu import waifu as app
+from Waifu import bot_token
 
 async def Sauce(bot_token, file_id):
     r = requests.post(f'https://api.telegram.org/bot{bot_token}/getFile?file_id={file_id}').json()
@@ -80,7 +80,7 @@ async def _reverse(_, msg):
     result = await Sauce(bot_token, file_id)
     if not result["output"]:
         return await text.edit("Couldn't find anything")
-    
+
     reply_text = f'[{result["output"]}]({result["similar"]})' if result["similar"] else f'[{result["output"]}]'
     reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton("Visit Site", url=result["similar"])]]) if result["similar"] else None
     await text.edit(reply_text, reply_markup=reply_markup)
