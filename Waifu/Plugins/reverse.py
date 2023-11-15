@@ -54,17 +54,22 @@ async def SauceNAO(file_id):
         'url': image_url
     }
 
-    response = requests.post(saucenao_url, data=params)
-    if response.status_code == 200:
-        result = response.json()
-        if 'results' in result and result['results']:
-            best_match = result['results'][0]
-            return {
-                'similar': best_match['data']['ext_urls'][0] if 'ext_urls' in best_match['data'] else '',
-                'output': best_match['data']['title'] if 'title' in best_match['data'] else ''
-            }
+    try:
+        response = requests.post(saucenao_url, data=params)
+        if response.status_code == 200:
+            result = response.json()
+            if 'results' in result and result['results']:
+                best_match = result['results'][0]
+                similar = best_match['data']['ext_urls'][0] if 'ext_urls' in best_match['data'] else ''
+                output = best_match['data']['title'] if 'title' in best_match['data'] else ''
+                print(f"SauceNAO - Similar: {similar}, Output: {output}")
+                return {'similar': similar, 'output': output}
+    except Exception as e:
+        print(f"SauceNAO - Exception: {e}")
 
+    print("SauceNAO - No results found or error occurred.")
     return {'similar': '', 'output': ''}
+
 
 
 async def get_file_id_from_message(msg):
