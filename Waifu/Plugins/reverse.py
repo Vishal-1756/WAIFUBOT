@@ -105,17 +105,18 @@ async def _reverse(_, msg):
     file_id = await get_file_id_from_message(msg)
     if not file_id:
         return await text.edit("**reply to media!**")
+    
     await text.edit("** Searching in Google and SauceNAO....**")
     result = await Sauce(bot_token, file_id)
 
     if not result["output_google"] and not result["output_saucenao"]:
         return await text.edit("Couldn't find anything")
 
-    reply_text = f'Google: [{result["output_google"]}]({result["similar_google"]})\n\nSauceNAO: [{result["output_saucenao"]}]({result["similar_saucenao"]})'
-    reply_markup = InlineKeyboardMarkup([
-        [InlineKeyboardButton("Visit Google", url=result["similar_google"])],
-        [InlineKeyboardButton("Visit SauceNAO", url=result["similar_saucenao"])]
-    ])
-    
-    await text.edit(reply_text, reply_markup=reply_markup)
+    reply_text = (
+        f'Google: {result["output_google"]}\n{result["similar_google"]}\n\n'
+        f'SauceNAO: {result["output_saucenao"]}\n{result["similar_saucenao"]}'
+    )
+
+    await text.edit(reply_text)
+
 
