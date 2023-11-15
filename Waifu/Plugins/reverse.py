@@ -28,10 +28,11 @@ async def Sauce(bot_token, file_id):
             url = f"https://www.google.com{similar_images_link['href']}"
             result['similar_google'].append(url)
 
-    for best in soup.find_all('div', {'class': 'r5a77d'}):
-        output = best.get_text()
+    best_guess_div = soup.find('div', {'class': 'r5a77d'})
+    if best_guess_div:
+        output = best_guess_div.get_text()
         decoded_text = unidecode(output)
-        result["output_google"] = decoded_text
+        result["output_google"] = f"{decoded_text} - Google Image Search: {to_parse}"
 
     # SauceNAO Search
     saucenao_result = await SauceNAO(file_id)
@@ -64,6 +65,7 @@ async def SauceNAO(file_id):
             }
 
     return {'similar': '', 'output': ''}
+
 
 async def get_file_id_from_message(msg):
     file_id = None
