@@ -13,7 +13,6 @@ async def Sauce(bot_token, file_id):
     file_path = r['result']['file_path']
     headers = {'User-agent': 'Mozilla/5.0 (Linux; Android 6.0.1; SM-G920V Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.98 Mobile Safari/537.36'}
     to_parse = f"https://images.google.com/searchbyimage?safe=off&sbisrc=tg&image_url={quote_plus(f'https://api.telegram.org/file/bot{bot_token}/{file_path}')}"
-    encoded_to_parse = quote_plus(to_parse)  # Encode the URL
 
     r = requests.get(encoded_to_parse, headers=headers)
     soup = BeautifulSoup(r.text, 'html.parser')
@@ -34,9 +33,9 @@ async def Sauce(bot_token, file_id):
     if best_guess_div:
         output = best_guess_div.get_text()
         decoded_text = unidecode(output)
-        result["output_google"] = f"[{decoded_text} - Google Image Search]({encoded_to_parse})"  # Use the encoded URL
+        result["output_google"] = f"[{decoded_text} - YOUR QUERY]({to_parse})"
 
-    return result, encoded_to_parse
+    return result, to_parse
 
 async def get_file_id_from_message(msg):
     file_id = None
