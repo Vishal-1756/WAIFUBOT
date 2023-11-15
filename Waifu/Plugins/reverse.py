@@ -1,5 +1,5 @@
 import requests
-from pyrogram import filters, client  # Pyrogram v2.0 and up
+from pyrogram import filters, Client  # Updated import for Pyrogram v2.0 and up
 from pyrogram.enums import ParseMode
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 
@@ -46,7 +46,7 @@ async def get_file_id_from_message(message: Message):
 
 
 @pbot.on_message(filters.command(["pp", "grs", "reverse"]))
-async def reverse(app: client, msg: Message):
+async def reverse(app: Client, msg: Message):  # Updated "client" to "Client"
     text = await msg.reply("```Parsing Media...```", parse_mode=ParseMode.MARKDOWN)
     file_id = await get_file_id_from_message(msg)
     if not file_id:
@@ -67,7 +67,7 @@ async def reverse(app: client, msg: Message):
     response = requests.post(API_URL, json=data)
 
     if response.status_code == 200:
-        result = response["data"]
+        result = response.json()["data"]
         return await text.edit(
             f'Sauce: ```{result["output"]}```',
             parse_mode=ParseMode.MARKDOWN,
