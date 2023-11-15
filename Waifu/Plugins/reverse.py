@@ -5,6 +5,7 @@ from unidecode import unidecode
 from Waifu import waifu as app
 from Waifu import bot_token
 from pyrogram import filters
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 async def Sauce(bot_token, file_id):
     r = requests.post(f'https://api.telegram.org/bot{bot_token}/getFile?file_id={file_id}').json()
@@ -34,44 +35,7 @@ async def Sauce(bot_token, file_id):
         decoded_text = unidecode(output)
         result["output_google"] = f"{decoded_text} - Google Image Search: {to_parse}"
 
-    # SauceNAO Search
-    saucenao_result = await SauceNAO(file_id)
-    result['similar_saucenao'] = saucenao_result.get('similar', '')
-    result['output_saucenao'] = saucenao_result.get('output', '')
-
     return result
-
-import json
-
-async def SauceNAO(file_id):
-    file_url = f"https://api.telegram.org/bot{bot_token}/getFile?file_id={file_id}"
-    r = requests.post(file_url).json()
-    file_path = r['result']['file_path']
-    image_url = f"https://api.telegram.org/file/bot{bot_token}/{file_path}"
-
-    saucenao_url = "https://saucenao.com/search.php"
-    params = {
-        'output_type': 2,
-        'numres': 1,
-        'url': image_url
-    }
-
-    try:
-        response = requests.post(saucenao_url, data=params)
-        if response.status_code == 200:
-            result = json.loads(response.text)
-            if 'results' in result and result['results']:
-                best_match = result['results'][0]
-                similar_links = best_match['data']['ext_urls'] if 'ext_urls' in best_match['data'] else []
-                output = best_match['data']['title'] if 'title' in best_match['data'] else ''
-                print(f"SauceNAO - Similar Links: {similar_links}, Output: {output}")
-                return {'similar': similar_links, 'output': output}
-    except Exception as e:
-        print(f"SauceNAO - Exception: {e}")
-
-    print("SauceNAO - No results found or error occurred.")
-    return {'similar': [], 'output': ''}
-
 
 async def get_file_id_from_message(msg):
     file_id = None
@@ -110,20 +74,29 @@ async def get_file_id_from_message(msg):
 
 @app.on_message(filters.command(["pp", "grs", "reverse", "r"]) & filters.group)
 async def _reverse(_, msg):
-    text = await msg.reply("** wait a sec...**")
+    text = await msg.reply("`⏫ Uploading To Google Search Engine`")
     file_id = await get_file_id_from_message(msg)
     if not file_id:
-        return await text.edit("**reply to media!**")
+        return await text.edit("`Dear Pro People's Please Reply To A Media File 🗃️`")
     
-    await text.edit("** Searching in Google and SauceNAO....**")
+    await text.edit("`🌐 Wait For >1 Min Searching Your Prompt`")
     result = await Sauce(bot_token, file_id)
 
-    if not result["output_google"] and not result["output_saucenao"]:
-        return await text.edit("Couldn't find anything")
+    if not result["output_google"]:
+        return await text.edit("`😅 Ntg Found On Google Buddy`")
 
     reply_text = (
-        f'Google: {result["output_google"]}\n[Similar Images]({result["similar_google"]})\n\n'
-        f'SauceNAO: {result["output_saucenao"]}\n[Similar Images]({result["similar_saucenao"]})'
+        f'Google: {result["output_google"]}\n'
+        f'Made by @ikaris0_0 distributed by @team_devx'
     )
 
-    await text.edit(reply_text)
+    keyboard = [
+        [
+            InlineKeyboardButton("📌 More Results Here", url=to_parse),
+            InlineKeyboardButton("👾 Support 📈", url="https://t.me/team_devsX"),
+        ]
+    ]
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    await text.edit_text(reply_text, reply_markup=reply_markup, parse_mode='markdown')
