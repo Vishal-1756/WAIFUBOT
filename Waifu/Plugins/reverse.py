@@ -1,12 +1,11 @@
 from Waifu import waifu as app
 from Waifu import bot_token
 from pyrogram import filters
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 import requests
 from urllib.parse import quote_plus
 from bs4 import BeautifulSoup
 from unidecode import unidecode
-from pyrogram.enums import *
-from pyrogram.types import *
 
 async def Sauce(bot_token, file_id):
     r = requests.post(f'https://api.telegram.org/bot{bot_token}/getFile?file_id={file_id}').json()
@@ -35,12 +34,11 @@ async def Sauce(bot_token, file_id):
     return result
 
 
-
 async def get_file_id_from_message(msg):
     file_id = None
     message = msg.reply_to_message
     if not message:
-        return 
+        return
     if message.document:
         if int(message.document.file_size) > 3145728:
             return
@@ -70,39 +68,35 @@ async def get_file_id_from_message(msg):
             return
         file_id = message.video.thumbs[0].file_id
     return file_id
+
+
+@app.on_message(filters.command(["pp", "grs", "reverse", "r"]) & filters.group)
+async def _reverse(_, msg):
+    text = await msg.reply("** wait a sec...**")
+    file_id = await get_file_id_from_message(msg)
+    if not file_id:
+        return await text.edit("**reply to media!**")
+    await text.edit("** Searching in Google....**")
+    result = await Sauce(bot_token, file_id)
+    if not result["output"]:
+        return await text.edit("Couldn't find anything")
     
+    reply_text = f'[{result["output"]}]({result["similar"]})' if result["similar"] else f'[{result["output"]}]'
+    reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton("Visit Site", url=result["similar"])]]) if result["similar"] else None
+    await text.edit(reply_text, reply_markup=reply_markup)
 
 
-@app.on_message(filters.command(["pp","grs","reverse","r"]) & filters.group)
-async def _reverse(_,msg):
-      text = await msg.reply("** wait a sec...**")
-      file_id = await get_file_id_from_message(msg)
-      if not file_id:
-          return await text.edit("**reply to media!**")
-      await text.edit("** Searching in Google....**")    
-      result = await Sauce(bot_token,file_id)
-      if not result["output"]:
-          return await text.edit("Couldn't find anything")
-      if result["similar"]:
-          await text.edit(f'[{result["output"]}]({result["similar"]})\n\n**Providers**:- @Ikaris0_0', reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Visit Site", url=result["similar"])]]))
-      else:
-          await text.edit(f'[{result["output"]}]')
+@app.on_message(filters.command(["pp", "grs", "reverse", "r"]) & filters.private)
+async def ppsearch(_, msg):
+    text = await msg.reply("** wait a sec...**")
+    file_id = await get_file_id_from_message(msg)
+    if not file_id:
+        return await text.edit("**reply to media!**")
+    await text.edit("** Searching in Google....**")
+    result = await Sauce(bot_token, file_id)
+    if not result["output"]:
+        return await text.edit("Couldn't find anything")
 
- 
-@app.on_message(filters.command(["pp","grs","reverse","r"]) & filters.private)
-async def ppsearch(_,msg):
-      text = await msg.reply("** wait a sec...**")
-      file_id = await get_file_id_from_message(msg)
-      if not file_id:
-          return await text.edit("**reply to media!**")
-      await text.edit("** Searching in Google....**")    
-      result = await Sauce(bot_token,file_id)
-      if not result["output"]:
-          return await text.edit("Couldn't find anything")
-      if result["similar"]:
-          await text.edit(f'[{result["output"]}]({result["similar"]})\n\n**Providers**:- @Ikaris0_0', reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Visit Site", url=result["similar"])]]))
-      else:
-          await text.edit(f'[{result["output"]}]')
- 
-                      
- 
+    reply_text = f'[{result["output"]}]({result["similar"]})' if result["similar"] else f'[{result["output"]}]'
+    reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton("Visit Site", url=result["similar"])]]) if result["similar"] else None
+    await text.edit(reply_text, reply_markup=reply_markup)
