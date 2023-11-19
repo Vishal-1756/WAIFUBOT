@@ -8,9 +8,9 @@ collection = db["waifus"]
 
 @waifu.on_message(filters.command("addwaifu"))
 async def start_add_waifu(_, message):
-    await message.reply("Please provide the waifu details in the following format:\n\nName: [waifu name]\nImage: [image URL]\nRarity: [rarity]\nSource: [source text]\nID: [special ID]")
+    await message.reply("Please reply to this message with the waifu details in the following format:\n\nName: [waifu name]\nImage: [image URL]\nRarity: [rarity]\nSource: [source text]\nID: [special ID]")
 
-@waifu.on_message(filters.regex(r"Name: (.+)\nImage: (.+)\nRarity: (.+)\nSource: (.+)(?:\nID: (.+))?$"))
+@waifu.on_message(filters.reply & filters.regex(r"Name: (.+)\nImage: (.+)\nRarity: (.+)\nSource: (.+)(?:\nID: (.+))?$"))
 async def add_waifu_detail(_, message):
     match = message.matches[0]
     special_id = match.group(5) if match.group(5) else None
