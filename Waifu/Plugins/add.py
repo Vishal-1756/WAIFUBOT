@@ -16,11 +16,11 @@ async def fetch_all_waifu_data_from_db():
 async def add_waifu_command(_, message):
     try:
         # Parse waifu details from the command
-        waifu_name = message.command[1].split(":")[1].strip()
-        image_url = message.command[2].split(":")[1].strip()
-        rarity = message.command[3].split(":")[1].strip()
-        special_id = message.command[4].split(":")[1].strip()
-        source = message.command[5].split(":")[1].strip()
+        waifu_name = message.command[2].split(":")[1].strip()
+        image_url = message.command[3].split(":")[1].strip()
+        rarity = message.command[4].split(":")[1].strip()
+        special_id = message.command[5].split(":")[1].strip()
+        source = message.command[6].split(":")[1].strip()
 
         waifu_data = {
             "name": waifu_name,
