@@ -31,9 +31,7 @@ async def catch_waifu(_, message):
                 user_id = message.from_user.id
                 
                 # Add the caught waifu to the user's collection
-                await add_waifu_to_db(user_id, spawned_waifu.get("name"), spawned_waifu.get("rarity"), spawned_waifu.get("special_id"), spawned_waifu.get("source"))
-
-                
+                await add_waifu_to_db(user_id, spawned_waifu.get("name"), spawned_waifu.get("rarity"), spawned_waifu.get("special_id"), spawned_waifu.get("source"), spawned_waifu.get("image_url"))
                 caption = f"Gotcha! You caught a {rank} {waifu_name}."
                 await waifu.send_photo(chat_id=message.chat.id, photo=image_url, caption=caption)
                 spawned_waifu = None  # Reset the spawned waifu after catching
