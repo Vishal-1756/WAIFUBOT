@@ -16,11 +16,16 @@ async def fetch_all_waifu_data_from_db():
 async def add_waifu_command(_, message):
     try:
         # Parse waifu details from the command
-        waifu_name = message.command[2].split(":")[1].strip()
-        image_url = message.command[3].split(":")[1].strip()
-        rarity = message.command[4].split(":")[1].strip()
-        special_id = message.command[5].split(":")[1].strip()
-        source = message.command[6].split(":")[1].strip()
+        args = message.text.split("\n")[1:]
+        waifu_name = next((arg.split(":")[1].strip() for arg in args if "Name:" in arg), "")
+        image_url = next((arg.split(":")[1].strip() for arg in args if "Image:" in arg), "")
+        rarity = next((arg.split(":")[1].strip() for arg in args if "Rarity:" in arg), "")
+        special_id = next((arg.split(":")[1].strip() for arg in args if "ID:" in arg), "")
+        source = next((arg.split(":")[1].strip() for arg in args if "Source:" in arg), "")
+
+        # Check if all required fields are present
+        if not all([waifu_name, image_url, rarity, special_id, source]):
+            raise ValueError("Missing required field(s)")
 
         waifu_data = {
             "name": waifu_name,
