@@ -13,16 +13,15 @@ spawned_waifu = None
 # Counter to track the number of messages in the group
 message_count = 0
 
-# Your message handler for the /catch command
 @waifu.on_message(filters.command("catch", prefix) & filters.group)
 async def catch_waifu(_, message):
     global spawned_waifu
     
     if spawned_waifu:
-        query = message.text.split(maxsplit=1)[1]
+        query = message.text.split(maxsplit=1)
         
-        # Check if the provided name matches the spawned waifu's name
-        if query.lower() == spawned_waifu.get("name", "").lower():
+        # Check if the query has enough parts and if the provided name matches the spawned waifu's name
+        if len(query) > 1 and query[1].lower() == spawned_waifu.get("name", "").lower():
             image_url = spawned_waifu.get("image_url")
             rank = spawned_waifu.get("rarity")
             waifu_name = spawned_waifu.get("name")
@@ -31,7 +30,7 @@ async def catch_waifu(_, message):
                 user_id = message.from_user.id
                 
                 # Add the caught waifu to the user's collection
-                await add_waifu_to_db(user_id, spawned_waifu.get("name"), spawned_waifu.get("rarity"), spawned_waifu.get("special_id"), spawned_waifu.get("source"), spawned_waifu.get("image_url"))
+                await add_waifu_to_db(user_id, waifu_name, rank, spawned_waifu.get("special_id"), spawned_waifu.get("source"), spawned_waifu.get("image_url"))
                 caption = f"Gotcha! You caught a {rank} {waifu_name}."
                 await waifu.send_photo(chat_id=message.chat.id, photo=image_url, caption=caption)
                 spawned_waifu = None  # Reset the spawned waifu after catching
