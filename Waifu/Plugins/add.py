@@ -53,7 +53,7 @@ async def fetch_waifu_command(_, message):
 
         if all_waifus:
             # Format and send waifu data
-            waifu_list = "\n".join(f"Name: {waifu['name']}, Image: {waifu['image_url']}, Rarity: {waifu['rarity']}, ID: {waifu['special_id']}, Source: {waifu['source']}" for waifu in all_waifus)
+            waifu_list = "\n".join(f"Name: {waifu.get('name', 'N/A')}, Image: {waifu.get('image_url', 'N/A')}, Rarity: {waifu.get('rarity', 'N/A')}, ID: {waifu.get('special_id', 'N/A')}, Source: {waifu.get('source', 'N/A')}" for waifu in all_waifus)
             await message.reply(f"All waifus:\n{waifu_list}")
         else:
             await message.reply("No waifus found in the database.")
