@@ -39,13 +39,10 @@ async def get_user_waifus(user_id: int):
     user_data = db.find_one({"user_id": user_id})
     if user_data:
         return [
-            {
-                "name": waifu.get("name", "N/A"),
-                "rarity": waifu.get("rarity", "N/A"),
-                "id": waifu.get("id", "N/A"),
-                "source": waifu.get("source", "N/A")
-            }
-            for waifu in user_data.get("waifus", [])
+            {"name": waifu.get("name", "N/A"),
+             "rarity": waifu.get("rarity", "N/A"),
+             "id": waifu.get("id", "N/A"),
+             "source": waifu.get("source", "N/A")} for waifu in user_data.get("waifus", []) if isinstance(waifu, dict)
         ]
     else:
         return []
