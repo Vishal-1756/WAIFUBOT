@@ -41,7 +41,7 @@ async def view_waifus_inline_query(client, inline_query):
         if isinstance(waifu, dict):  # Check if waifu is a dictionary
             title = waifu.get('name', 'No Name')
             photo_url = waifu.get('image_url', '')  # Adjusted to 'image_url'
-            caption = f"Name: {title}\nRank: {waifu.get('rank', 'No Rank')}\nId: {waifu.get('id', 'No Id')}\nSource: {waifu.get('source', 'No Source')}"
+            caption = f"Name: {title}\nRank: {waifu.get('rarity', 'No Rarity')}\nId: {waifu.get('id', 'No Id')}\nSource: {waifu.get('source', 'No Source')}"
 
             results.append(
                 InlineQueryResultPhoto(
