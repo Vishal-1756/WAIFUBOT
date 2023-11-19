@@ -27,6 +27,10 @@ async def add_waifu_command(_, message):
         if not all([waifu_name, image_url, rarity, special_id, source]):
             raise ValueError("Missing required field(s)")
 
+        # Ensure that the image URL starts with "http" or "https"
+        if not image_url.startswith(("http", "https")):
+            raise ValueError("Invalid image URL format")
+
         waifu_data = {
             "name": waifu_name,
             "image_url": image_url,
@@ -40,9 +44,13 @@ async def add_waifu_command(_, message):
 
         await message.reply("Waifu data added successfully!")
 
+    except ValueError as ve:
+        print(f"Error adding waifu: {str(ve)}")
+        await message.reply(f"An error occurred while adding waifu data: {str(ve)}. Please check the format and try again.")
+
     except Exception as e:
         print(f"Error adding waifu: {str(e)}")
-        await message.reply("An error occurred while adding waifu data. Please check the format and try again.")
+        await message.reply("An unexpected error occurred while adding waifu data. Please try again later.")
 
 # Example command usage
 @waifu.on_message(filters.command("fetchwaifu"))
