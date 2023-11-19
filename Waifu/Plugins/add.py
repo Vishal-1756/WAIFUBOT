@@ -12,33 +12,25 @@ async def add_waifu_detail(_, message):
     try:
         # Ensure that the message is a reply
         if message.reply_to_message and message.reply_to_message.text:
-            # Parse the waifu details from the user's reply
-            waifu_name = message.reply_to_message.text.split("\n")[1].split(":")[1].strip()
-            image_url = message.reply_to_message.text.split("\n")[2].split(":")[1].strip()
-            rarity = message.reply_to_message.text.split("\n")[3].split(":")[1].strip()
-            source = message.reply_to_message.text.split("\n")[4].split(":")[1].strip()
-            special_id = message.reply_to_message.text.split("\n")[5].split(":")[1].strip() if len(message.reply_to_message.text.split("\n")) > 5 else None
+            # Extract the details directly from the replied message
+            waifu_data = {
+                "waifu_name": message.reply_to_message.text.split("\n")[1].split(":")[1].strip(),
+                "image_url": message.reply_to_message.text.split("\n")[2].split(":")[1].strip(),
+                "rarity": message.reply_to_message.text.split("\n")[3].split(":")[1].strip(),
+                "source": message.reply_to_message.text.split("\n")[4].split(":")[1].strip(),
+                "special_id": message.reply_to_message.text.split("\n")[5].split(":")[1].strip() if len(message.reply_to_message.text.split("\n")) > 5 else None
+            }
 
             # Check if the special ID is already used for another waifu
-            if special_id and collection.find_one({"special_id": special_id}):
-                await message.reply(f"Special ID '{special_id}' is already in use for another waifu. Please provide a different ID.")
+            if waifu_data["special_id"] and collection.find_one({"special_id": waifu_data["special_id"]}):
+                await message.reply(f"Special ID '{waifu_data['special_id']}' is already in use for another waifu. Please provide a different ID.")
                 return
-
-            waifu_data = {
-                "special_id": special_id,
-                "waifu_name": waifu_name,
-                "rarity": rarity,
-                "image_url": image_url,
-                "source": source
-            }
 
             collection.insert_one(waifu_data)
             await message.reply("Waifu data added successfully!")
-            print(f"DEBUG: Waifu data added: {waifu_data}")
 
         else:
             await message.reply("Please reply to this message with the waifu details in the specified format.")
-            print("DEBUG: Missing reply or text in reply_to_message")
 
     except Exception as e:
         print(f"Error adding waifu: {str(e)}")
