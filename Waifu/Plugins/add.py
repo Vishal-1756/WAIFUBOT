@@ -34,9 +34,11 @@ async def add_waifu_detail(_, message):
 
             collection.insert_one(waifu_data)
             await message.reply("Waifu data added successfully!")
+            print(f"DEBUG: Waifu data added: {waifu_data}")
 
         else:
             await message.reply("Please reply to this message with the waifu details in the specified format.")
+            print("DEBUG: Missing reply or text in reply_to_message")
 
     except Exception as e:
         print(f"Error adding waifu: {str(e)}")
@@ -48,17 +50,14 @@ async def fetch_waifu_data(_, message):
         waifus = collection.find()
 
         for waifu in waifus:
-            if all(key in waifu for key in ["waifu_name", "rarity", "image_url", "source"]):
-                special_id = waifu.get("special_id", "N/A")
-                waifu_name = waifu["waifu_name"]
-                rarity = waifu["rarity"]
-                image_url = waifu["image_url"]
-                source = waifu["source"]
+            special_id = waifu.get("special_id", "N/A")
+            waifu_name = waifu.get("waifu_name", "No Name")
+            rarity = waifu.get("rarity", "No Rarity")
+            image_url = waifu.get("image_url", "")
+            source = waifu.get("source", "No Source")
 
-                caption = f"ID: {special_id}\nName: {waifu_name}\nImage: {image_url}\nRarity: {rarity}\nSource: {source}"
-                await message.reply_photo(photo=image_url, caption=caption)
-            else:
-                await message.reply("Waifu data is missing some fields and cannot be displayed.")
+            caption = f"ID: {special_id}\nName: {waifu_name}\nImage: {image_url}\nRarity: {rarity}\nSource: {source}"
+            await message.reply_photo(photo=image_url, caption=caption)
 
     except Exception as e:
         print(f"Error fetching waifus: {str(e)}")
