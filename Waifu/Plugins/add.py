@@ -13,12 +13,22 @@ async def add_waifu_detail(_, message):
         # Ensure that the command has arguments
         if len(message.command) >= 6:
             # Extract waifu details from command arguments
+            waifu_name = next((arg for arg in message.command if arg.startswith("Name:")), None)
+            image_url = next((arg for arg in message.command if arg.startswith("Image:")), None)
+            rarity = next((arg for arg in message.command if arg.startswith("Rarity:")), None)
+            source = next((arg for arg in message.command if arg.startswith("Source:")), None)
+            special_id = next((arg for arg in message.command if arg.startswith("ID:")), None)
+
+            if not all([waifu_name, image_url, rarity, source, special_id]):
+                await message.reply("Please include all required details in the /addwaifu command.")
+                return
+
             waifu_data = {
-                "waifu_name": message.command[1].split(":")[1].strip(),
-                "image_url": message.command[2].split(":")[1].strip(),
-                "rarity": message.command[3].split(":")[1].strip(),
-                "source": message.command[4].split(":")[1].strip(),
-                "special_id": message.command[5].split(":")[1].strip() if len(message.command) > 5 else None
+                "waifu_name": waifu_name.split(":")[1].strip(),
+                "image_url": image_url.split(":")[1].strip(),
+                "rarity": rarity.split(":")[1].strip(),
+                "source": source.split(":")[1].strip(),
+                "special_id": special_id.split(":")[1].strip()
             }
 
             # Check if the special ID is already used for another waifu
