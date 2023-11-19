@@ -28,13 +28,12 @@ async def harem_command(_, message):
 
 # Handle inline queries for viewing waifus
 @waifu.on_inline_query(filters.regex("^view_waifus$"))
-async def view_waifus_inline_query(_, inline_query):
-    user_id = inline_query.from_user.id
+async def view_waifus_inline_query(client, inline_query):
+    # Extract the user ID who clicked on the inline button from the callback query
+    user_id_clicked = inline_query.from_user.id
 
     # Fetch waifus for the specific user from the database
-    user_waifus = await get_user_waifus(user_id)
-    
-    print(f"DEBUG: User {user_id} waifus: {user_waifus}")
+    user_waifus = await get_user_waifus(user_id_clicked)
 
     results = []
 
@@ -43,7 +42,7 @@ async def view_waifus_inline_query(_, inline_query):
             title = waifu.get('name', 'No Name')
             photo_url = waifu.get('image', '')
             caption = f"Name: {title}\nRank: {waifu.get('rank', 'No Rank')}\nId: {waifu.get('id', 'No Id')}\nSource: {waifu.get('source', 'No Source')}"
-            
+
             results.append(
                 InlineQueryResultPhoto(
                     title=title,
@@ -53,6 +52,7 @@ async def view_waifus_inline_query(_, inline_query):
                 )
             )
         else:
-            print(f"DEBUG: Invalid waifu data for user {user_id}: {waifu}")
+            print(f"DEBUG: Invalid waifu data for user {user_id_clicked}: {waifu}")
 
-    await inline_query.answer(results, cache_time=0)
+    # Answer the inline query using the user ID who clicked on the inline button
+    await inline_query.answer(results, cache_time=0, switch_pm=f"@ChatRankRobot user.{user_id_clicked}")
