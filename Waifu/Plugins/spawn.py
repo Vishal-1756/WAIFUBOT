@@ -6,7 +6,6 @@ from Waifu import waifu, prefix
 from Waifu import DATABASE
 
 db = DATABASE["MAIN"]
-collection = db["waifus"]
 
 # Variable to store the currently spawned waifu
 spawned_waifu = None
@@ -59,7 +58,7 @@ async def on_text_message(_, message: Message):
         message_count = 0
         
         # Retrieve a random waifu from the database
-        random_waifu = collection.aggregate([{ "$sample": { "size": 1 } }])
+        random_waifu = db.aggregate([{ "$sample": { "size": 1 } }])
         spawned_waifu = next(random_waifu, None)
 
         if spawned_waifu:
