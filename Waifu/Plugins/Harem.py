@@ -40,7 +40,7 @@ async def view_waifus_inline_query(client, inline_query):
     for waifu in user_waifus:
         if isinstance(waifu, dict):  # Check if waifu is a dictionary
             title = waifu.get('name', 'No Name')
-            photo_url = waifu.get('image', '')
+            photo_url = waifu.get('image_url', '')  # Adjusted to 'image_url'
             caption = f"Name: {title}\nRank: {waifu.get('rank', 'No Rank')}\nId: {waifu.get('id', 'No Id')}\nSource: {waifu.get('source', 'No Source')}"
 
             results.append(
@@ -54,5 +54,5 @@ async def view_waifus_inline_query(client, inline_query):
         else:
             print(f"DEBUG: Invalid waifu data for user {user_id_clicked}: {waifu}")
 
-    # Answer the inline query using the user ID who clicked on the inline button
-    await inline_query.answer(results, cache_time=0, switch_pm=f"@ChatRankRobot user.{user_id_clicked}")
+    # Answer the inline query
+    await inline_query.answer(results, cache_time=0)
