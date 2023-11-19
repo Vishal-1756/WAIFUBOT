@@ -10,15 +10,15 @@ collection = db["waifus"]
 @waifu.on_message(filters.command("addwaifu"))
 async def add_waifu_detail(_, message):
     try:
-        # Ensure that the message is a reply
-        if message.reply_to_message and message.reply_to_message.text:
-            # Extract the details directly from the replied message
+        # Ensure that the command has arguments
+        if len(message.command) >= 6:
+            # Extract waifu details from command arguments
             waifu_data = {
-                "waifu_name": message.reply_to_message.text.split("\n")[1].split(":")[1].strip(),
-                "image_url": message.reply_to_message.text.split("\n")[2].split(":")[1].strip(),
-                "rarity": message.reply_to_message.text.split("\n")[3].split(":")[1].strip(),
-                "source": message.reply_to_message.text.split("\n")[4].split(":")[1].strip(),
-                "special_id": message.reply_to_message.text.split("\n")[5].split(":")[1].strip() if len(message.reply_to_message.text.split("\n")) > 5 else None
+                "waifu_name": message.command[1],
+                "image_url": message.command[2],
+                "rarity": message.command[3],
+                "source": message.command[4],
+                "special_id": message.command[5] if len(message.command) > 5 else None
             }
 
             # Check if the special ID is already used for another waifu
@@ -30,7 +30,7 @@ async def add_waifu_detail(_, message):
             await message.reply("Waifu data added successfully!")
 
         else:
-            await message.reply("Please reply to this message with the waifu details in the specified format.")
+            await message.reply("Please use the /addwaifu command with the following format:\n\n/addwaifu Name Image Rarity Source [ID]")
 
     except Exception as e:
         print(f"Error adding waifu: {str(e)}")
