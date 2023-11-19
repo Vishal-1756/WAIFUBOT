@@ -1,4 +1,4 @@
-from pyrogram import filters
+from pyrogram import filters, types
 from Waifu import waifu
 from pymongo import MongoClient
 from Waifu import DATABASE
@@ -26,6 +26,7 @@ async def add_waifu_detail(_, message):
                 await message.reply(f"Special ID '{waifu_data['special_id']}' is already in use for another waifu. Please provide a different ID.")
                 return
 
+            # Save the waifu data to the database
             collection.insert_one(waifu_data)
             await message.reply("Waifu data added successfully!")
 
@@ -48,8 +49,12 @@ async def fetch_waifu_data(_, message):
             image_url = waifu.get("image_url", "")
             source = waifu.get("source", "No Source")
 
-            caption = f"ID: {special_id}\nName: {waifu_name}\nImage: {image_url}\nRarity: {rarity}\nSource: {source}"
-            await message.reply_photo(photo=image_url, caption=caption)
+            # Send the image along with the caption
+            caption = f"ID: {special_id}\nName: {waifu_name}\nRarity: {rarity}\nSource: {source}"
+            await message.reply_photo(
+                photo=image_url,
+                caption=caption
+            )
 
     except Exception as e:
         print(f"Error fetching waifus: {str(e)}")
