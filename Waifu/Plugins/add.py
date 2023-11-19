@@ -1,6 +1,7 @@
 from pyrogram import filters
 from Waifu import waifu
 from pymongo import MongoClient
+from Waifu import DATABASE
 
 # Assuming DATABASE is properly configured
 db = DATABASE["MAIN"]
