@@ -18,7 +18,10 @@ async def add_waifu_command(_, message):
         # Parse waifu details from the command
         args = message.text.split("\n")[1:]
         waifu_name = next((arg.split(":")[1].strip() for arg in args if "Name:" in arg), "")
-        image_url = next((arg.split(":")[1].strip() for arg in args if "Image:" in arg), "")
+        
+        # Modify the extraction of image_url to capture everything after "Image:"
+        image_url = next((":".join(arg.split(":")[1:]).strip() for arg in args if "Image:" in arg), "")
+        
         rarity = next((arg.split(":")[1].strip() for arg in args if "Rarity:" in arg), "")
         special_id = next((arg.split(":")[1].strip() for arg in args if "ID:" in arg), "")
         source = next((arg.split(":")[1].strip() for arg in args if "Source:" in arg), "")
