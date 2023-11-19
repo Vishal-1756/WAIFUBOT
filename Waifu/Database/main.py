@@ -34,6 +34,7 @@ async def add_waifu_to_db(user_id: int, waifu_name: str, rarity: str, special_id
             "source": source
         }]})
 
+
 async def get_user_waifus(user_id: int):
     user_data = db.find_one({"user_id": user_id})
     if user_data:
