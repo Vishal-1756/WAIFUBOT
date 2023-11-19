@@ -21,7 +21,7 @@ async def add_waifu_to_db(user_id: int, waifu_name: str, rarity: str, special_id
             "rarity": rarity,
             "special_id": special_id,
             "source": source,
-            "image_url": image_url  # Include image_url
+            "image_url": image_url  # Add image_url to the user's waifu details
         })
 
         db.update_one({"user_id": user_id}, {"$set": {"waifu_details": user_waifus}})
@@ -31,9 +31,8 @@ async def add_waifu_to_db(user_id: int, waifu_name: str, rarity: str, special_id
             "rarity": rarity,
             "special_id": special_id,
             "source": source,
-            "image_url": image_url  # Include image_url
+            "image_url": image_url  # Add image_url to the user's waifu details
         }]})
-
 
 async def get_user_waifus(user_id: int):
     user_data = db.find_one({"user_id": user_id})
