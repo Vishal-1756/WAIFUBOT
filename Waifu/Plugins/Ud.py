@@ -30,4 +30,4 @@ async def ud(_, message: Message):
     except (KeyError, IndexError):
         reply_text = "Error processing the API response."
 
-    await message.reply_text(reply_text, parse_mode=Parsemode.MARKDOWN)
+    await message.reply_text(reply_text, parse_mode=ParseMode.MARKDOWN)
