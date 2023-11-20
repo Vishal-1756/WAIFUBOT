@@ -17,20 +17,18 @@ async def ud(_, message: Message):
         await message.reply("Please provide a word to define. Example: /ud <word>")
         return
 
-    
     response = requests.get(f"https://pervert-api.onrender.com/ud?query={text}&max=2").json()
 
     try:
         results = response.get("results", [])
         if results:
-            
             first_result = results[0]
             definition = first_result.get("definition", "")
             example = first_result.get("example", "")
 
-            reply_text = f'**Word**:- **{text}**\n\n **Defination**:- **{definition}**\n\n**Example**:- **{example}**'
+            reply_text = f'**Word**: `{text}`\n\n**Definition**: `{definition}`\n\n**Example**: `{example}`'
         else:
-            reply_text = f"No Results Found For Word:-{text}"
+            reply_text = f"No Results Found For Word: {text}"
     except (KeyError, IndexError):
         reply_text = "Error processing the API response."
 
