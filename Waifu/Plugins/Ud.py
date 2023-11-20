@@ -20,4 +20,5 @@ async def ud(_, message: Message):
     except (KeyError, IndexError):
         reply_text = "No results found."
 
-    await message.reply_text(reply_text, parse_mode=enums.Parsemode.MARKDOWN)
+    await message.reply_text(reply_text, parse_mode=enums.ParseMode.MARKDOWN)
+
