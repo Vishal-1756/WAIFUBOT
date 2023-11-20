@@ -19,7 +19,6 @@ photo_links = [
 async def start(_, message):
     user_id = int(message.from_user.id)
     mention = message.from_user.mention
-    username = waifu.get_me().username
     if message.chat.type == enums.ChatType.PRIVATE:
         # Check if the user is already in the database
         if user_id not in await get_users_list():
@@ -36,7 +35,7 @@ async def start(_, message):
                     InlineKeyboardButton("☌ Cʀᴇᴅɪᴛs ☌", url="https://telegra.ph/𓆩Ꭰᥲʀκ𓆪-𖤍-11-20-2")
                 ],
                 [
-                    InlineKeyboardButton("+ Aᴅᴅ Mᴇ Iɴ Gʀᴏᴜᴘ +", url="https://t.me/{username}?startgroup=true")
+                    InlineKeyboardButton("+ Aᴅᴅ Mᴇ Iɴ Gʀᴏᴜᴘ +", url="https://t.me/Chat_Rank_Roobot?startgroup=true")
                 ]
             ]
         )
