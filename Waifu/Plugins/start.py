@@ -40,5 +40,5 @@ async def start(_, message):
             ]
         )
 
-        for photo_link in random.sample(photo_links, 2):
+        for photo_link in random.sample(photo_links):
             await waifu.send_photo(chat_id=message.chat.id, photo=photo_link, caption=start_message.format(mention=mention), reply_markup=reply_markup)
