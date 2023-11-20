@@ -2,7 +2,8 @@ import requests
 from pyrogram import filters
 from pyrogram.types import Message
 from Waifu import waifu, prefix
-from pyrogram enums import Parsemode
+from pyrogram.enums import ParseMode
+
 @waifu.on_message(filters.command("ud", prefix))
 async def ud(_, message: Message):
     # Extract the word to define from the user's message
