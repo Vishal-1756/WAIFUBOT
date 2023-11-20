@@ -19,27 +19,27 @@ photo_links = [
 async def start(_, message):
     user_id = int(message.from_user.id)
     mention = message.from_user.mention
-
+    username = waifu.get_me().username
     if message.chat.type == enums.ChatType.PRIVATE:
         # Check if the user is already in the database
         if user_id not in await get_users_list():
             await add_users_to_db(user_id)
 
-        
         reply_markup = InlineKeyboardMarkup(
             [
                 [
                     InlineKeyboardButton("⤜ Sᴜᴘᴘᴏʀᴛ ⤛", url="https://t.me/botsupportx"),
-                    InlineKeyboardButton("⇜ Uᴘᴅᴀᴛᴇs ⇝", url="https://t.me/botupdatex"),
+                    InlineKeyboardButton("⇜ Uᴘᴅᴀᴛᴇs ⇝", url="https://t.me/botupdatex")
+                ],
+                [
                     InlineKeyboardButton("☊ Oᴡɴᴇʀ ☋", url="https://t.me/Ikaris0_0"),
                     InlineKeyboardButton("☌ Cʀᴇᴅɪᴛs ☌", url="https://telegra.ph/𓆩Ꭰᥲʀκ𓆪-𖤍-11-20-2")
                 ],
                 [
-                    InlineKeyboardButton("+ Aᴅᴅ Mᴇ Iɴ Gʀᴏᴜᴘ +", url="https://t.me/your_bot_username?startgroup=true")
+                    InlineKeyboardButton("+ Aᴅᴅ Mᴇ Iɴ Gʀᴏᴜᴘ +", url="https://t.me/{username}?startgroup=true")
                 ]
             ]
         )
 
-        
         for photo_link in random.sample(photo_links, 2):
             await waifu.send_photo(chat_id=message.chat.id, photo=photo_link, caption=start_message.format(mention=mention), reply_markup=reply_markup)
