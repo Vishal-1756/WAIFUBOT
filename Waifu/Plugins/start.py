@@ -29,13 +29,13 @@ async def start(_, message):
         reply_markup = InlineKeyboardMarkup(
             [
                 [
-                    InlineKeyboardButton("Support", url="https://t.me/botsupportx"),
-                    InlineKeyboardButton("Update", url="https://t.me/botupdatex"),
-                    InlineKeyboardButton("Owner", url="https://t.me/Ikaris0_0"),
-                    InlineKeyboardButton("Credits", url="https://telegra.ph/𓆩Ꭰᥲʀκ𓆪-𖤍-11-20-2")
+                    InlineKeyboardButton("⤜ Sᴜᴘᴘᴏʀᴛ ⤛", url="https://t.me/botsupportx"),
+                    InlineKeyboardButton("⇜ Uᴘᴅᴀᴛᴇs ⇝", url="https://t.me/botupdatex"),
+                    InlineKeyboardButton("☊ Oᴡɴᴇʀ ☋", url="https://t.me/Ikaris0_0"),
+                    InlineKeyboardButton("☌ Cʀᴇᴅɪᴛs ☌", url="https://telegra.ph/𓆩Ꭰᥲʀκ𓆪-𖤍-11-20-2")
                 ],
                 [
-                    InlineKeyboardButton("+ Add Me In Group +", url="https://t.me/your_bot_username?startgroup=true")
+                    InlineKeyboardButton("+ Aᴅᴅ Mᴇ Iɴ Gʀᴏᴜᴘ +", url="https://t.me/your_bot_username?startgroup=true")
                 ]
             ]
         )
