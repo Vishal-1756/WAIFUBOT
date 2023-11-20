@@ -1,13 +1,19 @@
 import asyncio
+import random
+from pyrogram import filters, enums
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from Waifu.Database.main import add_users_to_db, get_users_list
-from pyrogram import filters, enums 
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton 
 from Waifu import waifu
 from Waifu import prefix
 
-# Define your custom start message and extra text
-start_message = "Welcome to the Waifu Bot! I can help you catch and collect waifus. Use /help to see available commands."
-extra_text = "Feel free to explore the available commands and have fun!"
+
+start_message = "Mᴏsʜɪ Mᴏsʜɪ {mention}\ɴTʜɪs ɪs ᴡᴀɪғᴜ ɢʀᴀʙʙᴇʀ/ᴄᴏʟʟᴇᴄᴛᴏʀ ʙᴏᴛ. Iᴛ's ᴀʟʟᴏᴡᴇᴅ ᴛᴏ ᴄᴀᴛᴄʜ/ɢʀᴀʙ ʀᴀɴᴅᴏᴍ ᴡᴀɪғᴜs sᴘᴀᴡɴᴇᴅ ɪɴ ɢʀᴏᴜᴘ ᴄʜᴀᴛ.\ɴFᴏʀ ᴍᴏʀᴇ Jᴏɪɴ: [Sᴜᴘᴘᴏʀᴛ](https://t.me/botsupportx)"
+photo_links = [
+    "https://telegra.ph/file/31544ca877fde042275ff.jpg",
+    "https://telegra.ph/file/2e60670798b5b70458c67.jpg",
+    "https://telegra.ph/file/95f92cefb8ec53ee0c625.jpg",
+    "https://telegra.ph/file/3b5ebeeb66bdef64b87fd.jpg"
+]
 
 @waifu.on_message(filters.command("start", prefix) | filters.private)
 async def start(_, message):
@@ -18,8 +24,22 @@ async def start(_, message):
         # Check if the user is already in the database
         if user_id not in await get_users_list():
             await add_users_to_db(user_id)
-        
-        # Send the custom start message and extra text
-        await message.reply_text(start_message + "\n\n" + extra_text)
 
-# Additional code for other commands not shown, but you can keep it as you had before.
+        
+        reply_markup = InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton("Support", url="https://t.me/botsupportx"),
+                    InlineKeyboardButton("Update", url="https://t.me/botupdatex"),
+                    InlineKeyboardButton("Owner", url="https://t.me/Ikaris0_0"),
+                    InlineKeyboardButton("Credits", url="https://telegra.ph/𓆩Ꭰᥲʀκ𓆪-𖤍-11-20-2")
+                ],
+                [
+                    InlineKeyboardButton("+ Add Me In Group +", url="https://t.me/your_bot_username?startgroup=true")
+                ]
+            ]
+        )
+
+        
+        for photo_link in random.sample(photo_links, 2):
+            await waifu.send_photo(chat_id=message.chat.id, photo=photo_link, caption=start_message.format(mention=mention), reply_markup=reply_markup)
