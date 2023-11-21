@@ -21,14 +21,16 @@ async def start_command(_, message):
 
     if message.chat.type == enums.ChatType.PRIVATE:
         user_id = int(message.from_user.id)
-        # Check if the user is already in the database
+        photo_link = random.choice(photo_links)
+        await message.reply_photo(photo=photo_link, caption=start_message.format(mention=mention), reply_markup=reply_markup)
         if user_id not in await get_users_list():
             await add_users_to_db(user_id)
     elif message.chat.type != enums.ChatType.PRIVATE:
-        # Check if the chat is already in the database
+        photo_link = random.choice(photo_links)
+        await message.reply_photo(photo=photo_link, caption=start_message.format(mention=mention), reply_markup=reply_markup)
         if chat_id not in await get_chats_list():
             await add_chat_to_db(message.chat)
-
+   
     reply_markup = InlineKeyboardMarkup(
         [
             [
@@ -44,6 +46,3 @@ async def start_command(_, message):
             ]
         ]
     )
-
-    photo_link = random.choice(photo_links)
-    await message.reply_photo(photo=photo_link, caption=start_message.format(mention=mention), reply_markup=reply_markup)
