@@ -27,7 +27,9 @@ async def start(_, message):
         # Check if the chat is already in the database
         if message.chat.id not in await get_chats_list():
             await add_chat_to_db(message.chat)
-
+    else:
+        await waifu.send_photo(chat_id=message.chat.id, photo=photo_link, caption=start_message.format(mention=mention), reply_markup=reply_markup)
+        
     reply_markup = InlineKeyboardMarkup(
         [
             [
@@ -45,4 +47,4 @@ async def start(_, message):
     )
 
     photo_link = random.choice(photo_links)
-    await waifu.send_photo(chat_id=message.chat.id, photo=photo_link, caption=start_message.format(mention=mention), reply_markup=reply_markup)
+    
