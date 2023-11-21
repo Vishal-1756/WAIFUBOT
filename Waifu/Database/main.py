@@ -45,7 +45,7 @@ async def get_user_waifus(user_id: int):
 
 async def add_chat_to_db(chat: Chat):
     chat_id = chat.id
-    chat_data = {"chat_id": chat_id, "type": chat.type}
+    chat_data = {"chat_id": chat_id, "type": str(chat.type)}
     collection.insert_one(chat_data)
 
 async def get_chats_list():
