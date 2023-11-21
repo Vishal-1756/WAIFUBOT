@@ -1,6 +1,6 @@
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from Database.main import get_top_harem_groups, get_chat_top_harem_users
+from Waifu.Database.main import get_top_harem_groups, get_chat_top_harem_users
 from Waifu import waifu
 
 # Define a constant for the number of users per page
