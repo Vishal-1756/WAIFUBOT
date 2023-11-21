@@ -14,6 +14,23 @@ photo_links = [
     "https://telegra.ph/file/3b5ebeeb66bdef64b87fd.jpg"
 ]
 
+reply_markup = InlineKeyboardMarkup(
+        [
+            [
+                InlineKeyboardButton("⤜ Sᴜᴘᴘᴏʀᴛ ⤛", url="https://t.me/botsupportx"),
+                InlineKeyboardButton("⇜ Uᴘᴅᴀᴛᴇs ⇝", url="https://t.me/botupdatex")
+            ],
+            [
+                InlineKeyboardButton("☊ Oᴡɴᴇʀ ☋", url="https://t.me/Ikaris0_0"),
+                InlineKeyboardButton("☌ Cʀᴇᴅɪᴛs ☌", url="https://telegra.ph/𓆩Ꭰᥲʀκ𓆪-𖤍-11-20-2")
+            ],
+            [
+                InlineKeyboardButton("+ Aᴅᴅ Mᴇ Iɴ Gʀᴏᴜᴘ +", url="https://t.me/Chat_Rank_Roobot?startgroup=true")
+            ]
+        ]
+)
+
+
 @waifu.on_message(filters.command("start", prefix))
 async def start_command(_, message):
     chat_id = int(message.chat.id)
@@ -30,19 +47,3 @@ async def start_command(_, message):
         await message.reply_photo(photo=photo_link, caption=start_message.format(mention=mention), reply_markup=reply_markup)
         if chat_id not in await get_chats_list():
             await add_chat_to_db(message.chat)
-   
-    reply_markup = InlineKeyboardMarkup(
-        [
-            [
-                InlineKeyboardButton("⤜ Sᴜᴘᴘᴏʀᴛ ⤛", url="https://t.me/botsupportx"),
-                InlineKeyboardButton("⇜ Uᴘᴅᴀᴛᴇs ⇝", url="https://t.me/botupdatex")
-            ],
-            [
-                InlineKeyboardButton("☊ Oᴡɴᴇʀ ☋", url="https://t.me/Ikaris0_0"),
-                InlineKeyboardButton("☌ Cʀᴇᴅɪᴛs ☌", url="https://telegra.ph/𓆩Ꭰᥲʀκ𓆪-𖤍-11-20-2")
-            ],
-            [
-                InlineKeyboardButton("+ Aᴅᴅ Mᴇ Iɴ Gʀᴏᴜᴘ +", url="https://t.me/Chat_Rank_Roobot?startgroup=true")
-            ]
-        ]
-    )
