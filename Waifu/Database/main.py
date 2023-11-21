@@ -1,15 +1,15 @@
 from Waifu import DATABASE
 
 db = DATABASE["MAIN"]
-collection = db.["users"]
+collection = db["users"]
 
 async def add_users_to_db(user_id: int):
-     string = {"user_id": user_id}
-     collection.insert_one(string)
+    string = {"user_id": user_id}
+    collection.insert_one(string)
 
 async def get_users_list():
-     user_ids = [x.get("user_id") for x in collection.find() if "user_id" in x]
-     return user_ids
+    user_ids = [x.get("user_id") for x in collection.find() if "user_id" in x]
+    return user_ids
 
 async def add_waifu_to_db(user_id: int, waifu_name: str, rarity: str, special_id: int, source: str, image_url: str):
     user_data = collection.find_one({"user_id": user_id})
