@@ -35,16 +35,13 @@ reply_markup = InlineKeyboardMarkup(
 async def start_command(_, message):
     chat_id = int(message.chat.id)
     mention = f"@{message.from_user.username}" if message.from_user.username else message.from_user.mention
-
+    
     if message.chat.type == enums.ChatType.PRIVATE:
         user_id = int(message.from_user.id)
-        photo_link = random.choice(photo_links)
         await message.reply_photo(photo=photo_link, caption=start_message.format(mention=mention), reply_markup=reply_markup)
         if user_id not in await get_users_list():
             await add_users_to_db(user_id)
     else:
-        message.chat.type != enums.ChatType.PRIVATE:
-        photo_link = random.choice(photo_links)
         await message.reply_photo(photo=photo_link, caption=start_message.format(mention=mention), reply_markup=reply_markup)
         if chat_id not in await get_chats_list():
             await add_chat_to_db(message.chat)
