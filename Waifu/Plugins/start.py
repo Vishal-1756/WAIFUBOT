@@ -18,6 +18,9 @@ photo_links = [
 async def start_private(_, message):
     user_id = int(message.from_user.id)
     mention = message.from_user.mention
+    # Check if the user is already in the database
+    if user_id not in await get_users_list():
+        await add_users_to_db(user_id)
 
     reply_markup = InlineKeyboardMarkup(
         [
@@ -36,19 +39,17 @@ async def start_private(_, message):
     )
 
     photo_link = random.choice(photo_links)
-
-    # Check if the user is already in the database
-    if user_id not in await get_users_list():
-        await add_users_to_db(user_id)
-
-    await waifu.send_photo(chat_id=message.chat.id, photo=photo_link, caption=start_message.format(mention=mention), reply_markup=reply_markup)
+    await message.reply_photo(photo=photo_link, caption=start_message.format(mention=mention), reply_markup=reply_markup)
 
 
 @waifu.on_message(filters.command("start", prefix) & filters.group)
 async def start_group(_, message):
     chat_id = int(message.chat.id)
     mention = message.from_user.mention
-
+    # Check if the chat is already in the database
+    if chat_id not in await get_chats_list():
+        await add_chat_to_db(message.chat)
+    
     reply_markup = InlineKeyboardMarkup(
         [
             [
@@ -66,9 +67,4 @@ async def start_group(_, message):
     )
 
     photo_link = random.choice(photo_links)
-
-    # Check if the chat is already in the database
-    if chat_id not in await get_chats_list():
-        await add_chat_to_db(message.chat)
-
-    await waifu.send_photo(chat_id=message.chat.id, photo=photo_link, caption=start_message.format(mention=mention), reply_markup=reply_markup)
+    await message.reply_photo(photo=photo_link, caption=start_message.format(mention=mention), reply_markup=reply_markup)
