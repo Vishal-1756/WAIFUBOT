@@ -42,11 +42,11 @@ async def start(_, message):
         if user_id not in await get_users_list():
             await add_users_to_db(user_id)
             await waifu.send_photo(chat_id=message.chat.id, photo=photo_link, caption=start_message.format(mention=mention), reply_markup=reply_markup)
+            return
         
     elif message.chat.type == enums.ChatType.SUPERGROUP:
         # Check if the chat is already in the database
         if message.chat.id not in await get_chats_list():
             await add_chat_to_db(message.chat)
             await waifu.send_photo(chat_id=message.chat.id, photo=photo_link, caption=start_message.format(mention=mention), reply_markup=reply_markup)
-        
-        
+            return
