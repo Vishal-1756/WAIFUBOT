@@ -45,11 +45,11 @@ async def start_private(_, message):
 @waifu.on_message(filters.command("start", prefix) & filters.group)
 async def start_group(_, message):
     chat_id = int(message.chat.id)
-    mention = message.from_user.mention
+    mention = f"@{message.from_user.username}" if message.from_user.username else message.from_user.mention
     # Check if the chat is already in the database
     if chat_id not in await get_chats_list():
         await add_chat_to_db(message.chat)
-    
+
     reply_markup = InlineKeyboardMarkup(
         [
             [
