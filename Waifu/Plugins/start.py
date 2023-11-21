@@ -36,7 +36,6 @@ reply_markup = InlineKeyboardMarkup(
 
 @waifu.on_message(filters.command("start", prefix))
 async def start_command(_, message):
-    chat_id = int(message.chat.id)
     mention = f"@{message.from_user.username}" if message.from_user.username else message.from_user.mention
     
     if message.chat.type == enums.ChatType.PRIVATE:
@@ -50,6 +49,6 @@ async def start_group(_, message):
     chat_id = int(message.chat.id)
     mention = f"@{message.from_user.username}" if message.from_user.username else message.from_user.mention
     await message.reply_photo(photo=photo_link, caption=start_message.format(mention=mention), reply_markup=reply_markup)
-        if chat_id not in await get_chats_list():
-            await add_chat_to_db(message.chat)
+    if chat_id not in await get_chats_list():
+        await add_chat_to_db(message.chat)
     
