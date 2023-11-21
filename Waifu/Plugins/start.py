@@ -6,7 +6,6 @@ from Waifu.Database.main import add_users_to_db, get_users_list
 from Waifu import waifu
 from Waifu import prefix
 
-
 start_message = "Mᴏsʜɪ Mᴏsʜɪ {mention}\ɴTʜɪs ɪs ᴡᴀɪғᴜ ɢʀᴀʙʙᴇʀ/ᴄᴏʟʟᴇᴄᴛᴏʀ ʙᴏᴛ. Iᴛ's ᴀʟʟᴏᴡᴇᴅ ᴛᴏ ᴄᴀᴛᴄʜ/ɢʀᴀʙ ʀᴀɴᴅᴏᴍ ᴡᴀɪғᴜs sᴘᴀᴡɴᴇᴅ ɪɴ ɢʀᴏᴜᴘ ᴄʜᴀᴛ.\ɴFᴏʀ ᴍᴏʀᴇ Jᴏɪɴ: [Sᴜᴘᴘᴏʀᴛ](https://t.me/botsupportx)"
 photo_links = [
     "https://telegra.ph/file/31544ca877fde042275ff.jpg",
@@ -40,5 +39,5 @@ async def start(_, message):
             ]
         )
 
-        for photo_link in random.sample(photo_links):
-            await waifu.send_photo(chat_id=message.chat.id, photo=photo_link, caption=start_message.format(mention=mention), reply_markup=reply_markup)
+        photo_link = random.choice(photo_links)
+        await waifu.send_photo(chat_id=message.chat.id, photo=photo_link, caption=start_message.format(mention=mention), reply_markup=reply_markup)
