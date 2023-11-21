@@ -14,19 +14,19 @@ photo_links = [
     "https://telegra.ph/file/3b5ebeeb66bdef64b87fd.jpg"
 ]
 
-@waifu.on_message(filters.command("start", prefix) | filters.private | filters.group)
+@waifu.on_message(filters.command("start", prefix))
 async def start(_, message):
     user_id = int(message.from_user.id)
-    chat_id = int(message.chat.id)
     mention = message.from_user.mention
 
-    # Check if the user is already in the database
-    if user_id not in await get_users_list():
-        await add_users_to_db(user_id)
-
-    # Add the group to the database if it's not already there
-    if chat_id not in await get_chats_list():
-        await add_chat_to_db(message.chat)
+    if message.chat.type == enums.ChatType.PRIVATE:
+        # Check if the user is already in the database
+        if user_id not in await get_users_list():
+            await add_users_to_db(user_id)
+    elif message.chat.type == enums.ChatType.SUPERGROUP:
+        # Check if the chat is already in the database
+        if message.chat.id not in await get_chats_list():
+            await add_chat_to_db(message.chat)
 
     reply_markup = InlineKeyboardMarkup(
         [
