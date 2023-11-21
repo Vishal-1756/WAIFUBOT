@@ -1,5 +1,5 @@
 from pyrogram import filters
-from Database.main import get_chats_list, get_users_list
+from Waifu.Database.main import get_chats_list, get_users_list
 from Waifu import waifu
 
 @waifu.on_message(filters.command("stats", prefixes="/"))
