@@ -87,7 +87,8 @@ async def sauce_command(_, message):
                 video = jdata['result']['data']['video']
 
                 tinyurl = await shorten_video_url(video)
-                caption = f"Name: *{name}*\nEpisode: *{episode}*\nVideo: *{tinyurl}*"
+                caption = f"Name: **{name}**\nEpisode: **{episode}**\nVideo: **{tinyurl}**"
+
 
                 try:
                     media = InputMediaVideo(FileId(video))
