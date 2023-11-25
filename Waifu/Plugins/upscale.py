@@ -8,6 +8,8 @@ from Waifu import waifu as app
 import asyncio
 from lexica import AsyncClient
 from lexica.constants import languageModels
+from pyrogram import filters, types as t
+
 
 async def getFile(message):
     if not message.reply_to_message:
