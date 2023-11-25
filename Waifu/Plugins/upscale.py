@@ -25,7 +25,7 @@ async def getFile(message):
 
 async def UpscaleImages(image: bytes) -> str:
     """
-    Upscales an image and return with upscaled image path.
+    Upscales an image and returns the upscaled image path.
     """
     try:
         client = AsyncClient()
@@ -66,20 +66,18 @@ async def upscaleImages(_, message):
     file = await getFile(message)
     if file is None:
         return await message.reply_text("`Dear Pro Ppls Reply To a Media File 🗃️`")
-    msg = await message.reply("`Requesting to api wait...`")
+    msg = await message.reply("`Requesting to API, please wait...`")
     imageBytes = open(file,"rb").read()
     os.remove(file)
     upscaledImage = await UpscaleImages(imageBytes)
     try:
-      await message.reply_document(open(upscaledImage,"rb"))
-      await msg.delete()
-      os.remove(upscaledImage)
+        await message.reply_document(open(upscaledImage,"rb"))
+        await msg.delete()
+        os.remove(upscaledImage)
     except Exception as e:
-       await msg.edit(f"{e}").save("upscale.png")
+        await msg.edit(f"{e}").save("upscale.png")
         await message.reply_document("upscale.png")
         await temp.delete()
         os.remove("upscale.png")
     except:
         return await temp.edit_text("**Try again after 10 seconds.**")
-
-
