@@ -42,7 +42,7 @@ async def upscale(client,message):
         image = await message.reply_to_message.download()
     except:
         return await message.reply_text("reply to an image to upscale images.")
-    temp = await message.reply_text("`wait a moment upscaling your image....`")
+    temp = await message.reply_text("**wait a moment upscaling your image....**")
     with open(image, "rb") as image_file:
         encoded_image = base64.b64encode(image_file.read())
     img = encoded_image.decode('utf-8')
@@ -52,7 +52,12 @@ async def upscale(client,message):
         resp = requests.get(link)
         data = resp.content
         Img = Image.open(BytesIO(data))
-        Imgfrom pyrogram import Client, filters, types as t
+        Img.save("upscale.png")
+        await message.reply_document("upscale.png")
+        await temp.delete()
+        os.remove("upscale.png")
+    except:
+        return await temp.edit_text("**Try again after 10 seconds.**")
 
 @app.on_message(filters.command(["up"]))
 async def upscaleImages(_, message):
