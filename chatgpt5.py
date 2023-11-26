@@ -7,8 +7,16 @@ api_url = "https://pervert-api.onrender.com/chatgpt5"
 
 @app.on_message(filters.command("chat5"))
 async def chatgpt5(_, message: Message):
-    await message.reply_text("`Wait patiently, requesting to API...`")
+   
+    if len(message.command) < 2:
+        await message.reply_text("`Please provide a query.`")
+        return
+
+    
     query = " ".join(message.command[1:])
+    
+    await message.reply_text("`Wait patiently, requesting to API...`")
+
     try:
         response = requests.get(f"{api_url}?query={query}")
         data = response.json()
