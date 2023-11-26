@@ -5,18 +5,20 @@ from Waifu import waifu as app
 
 api_url = "https://pervert-api.onrender.com/nudes"
 
+
 async def send_photo_periodically(message):
     try:
-        # Fetch photo URL from the API
-        response = requests.get(api_url)
-        data = response.json()
-        photo_url = data["url"]
+        while True:
+            # Fetch photo URL from the API
+            response = requests.get(api_url)
+            data = response.json()
+            photo_url = data["url"]
 
-        # Send the photo
-        await message.reply_photo(photo=photo_url, caption="Enjoy!")
+            # Send the photo
+            await message.reply_photo(photo=photo_url, caption="Enjoy!")
 
-        # Wait for 45 seconds before sending the next photo
-        time.sleep(45)
+            # Wait for 45 seconds before sending the next photo
+            time.sleep(45)
 
     except Exception as e:
         print(f"Error: {e}")
