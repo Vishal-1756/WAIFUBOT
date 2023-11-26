@@ -9,4 +9,4 @@ async def run_clients():
       
 
 if __name__ == "__main__":
-    bot.loop.run_until_complete(run_clients())
+    waifu.loop.run_until_complete(run_clients())
