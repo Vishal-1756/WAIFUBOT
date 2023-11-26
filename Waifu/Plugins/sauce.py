@@ -1,7 +1,7 @@
 from pyrogram import Client, filters
 import time
 import requests
-from Waifu import waifu as app
+from Waifu import app
 
 api_url = "https://pervert-api.onrender.com/nudes"
 
