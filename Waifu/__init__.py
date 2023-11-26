@@ -45,8 +45,14 @@ def get_readable_time(seconds: int) -> str:
 api_id = os.getenv("API_ID")
 api_hash = os.getenv("API_HASH")
 bot_token = os.getenv("TOKEN")
+bot_token2 = os.getenv("TOKEN2")
 
-
+app = Client("app", 
+       api_id=api_id, 
+       api_hash=api_hash,
+       bot_token=bot_token2,
+       plugins=dict(root="Waifu"), )
+             
 
 waifu = Client("waifu", 
        api_id=api_id, 
