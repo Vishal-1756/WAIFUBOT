@@ -5,7 +5,7 @@ from Waifu import waifu as app
 
 api_url = "https://pervert-api.onrender.com/chatgpt5"
 
-@app.on_message(filters.command("chat5"))
+@app.on_message(filters.command("chatgpt"))
 async def chatgpt5(_: Client, message: Message):
     # Check if there is a query provided
     if len(message.command) < 2:
