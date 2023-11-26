@@ -5,7 +5,7 @@ from Waifu import waifu as app
 
 api_url_chat5 = "https://pervert-api.onrender.com/chatgpt5"
 api_url_chat4 = "https://pervert-api.onrender.com/chatgpt4"
-api_url_bard = "https://pervert-api.onrender.com/bard"
+api_url_bard = "https://pervert-api.onrender.com/bardai"
 
 async def fetch_data(api_url: str, query: str) -> tuple:
     async with httpx.AsyncClient() as client:
