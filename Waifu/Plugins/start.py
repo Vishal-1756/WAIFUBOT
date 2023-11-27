@@ -1,54 +1,119 @@
-import asyncio
-import random
-from pyrogram import filters, enums
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from Waifu.Database.main import add_users_to_db, get_users_list, add_chat_to_db, get_chats_list
-from Waifu import waifu
-from Waifu import prefix
+# Made By @Ikaris0_0
+# Credit Hatane wala 2 baap ka!!
+# Support:- @botsupportx
+# Required installs unidecode, urllib3, bs4
 
+import requests
+from urllib.parse import quote_plus, unquote
+from bs4 import BeautifulSoup
+from unidecode import unidecode
+from Waifu import waifu as app
+from Waifu import TOKEN as bot_token
+from pyrogram import filters
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from pyrogram.enums import ParseMode
 
-start_message = "Mᴏsʜɪ Mᴏsʜɪ {mention}\nTʜɪs ɪs ᴡᴀɪғᴜ ɢʀᴀʙʙᴇʀ/ᴄᴏʟʟᴇᴄᴛᴏʀ ʙᴏᴛ.\nIᴛ's ᴀʟʟᴏᴡᴇᴅ ᴛᴏ ᴄᴀᴛᴄʜ/ɢʀᴀʙ ʀᴀɴᴅᴏᴍ ᴡᴀɪғᴜs sᴘᴀᴡɴᴇᴅ ɪɴ ɢʀᴏᴜᴘ ᴄʜᴀᴛ.\nFᴏʀ ᴍᴏʀᴇ Jᴏɪɴ: [Sᴜᴘᴘᴏʀᴛ](https://t.me/botsupportx)"
-photo_links = [
-    "https://telegra.ph/file/31544ca877fde042275ff.jpg",
-    "https://telegra.ph/file/2e60670798b5b70458c67.jpg",
-    "https://telegra.ph/file/95f92cefb8ec53ee0c625.jpg",
-    "https://telegra.ph/file/3b5ebeeb66bdef64b87fd.jpg"
-]
+async def Sauce(bot_token, file_id):
+    r = requests.post(f'https://api.telegram.org/bot{bot_token}/getFile?file_id={file_id}').json()
+    file_path = r['result']['file_path']
+    headers = {'User-agent': 'Mozilla/5.0 (Linux; Android 6.0.1; SM-G920V Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.98 Mobile Safari/537.36'}
+    to_parse = f"https://images.google.com/searchbyimage?safe=off&sbisrc=tg&image_url=https://api.telegram.org/file/bot{bot_token}/{file_path}"
+    r = requests.get(to_parse, headers=headers)
+    soup = BeautifulSoup(r.text, 'html.parser')
+    
+    result = {
+        "similar_google": [],
+        'output_google': '',
+    }
 
-photo_link = random.choice(photo_links)
+    # Google Search
+    similar_images_div = soup.find('div', {'class': 'RAyV4b'})
+    if similar_images_div:
+        for similar_images_link in similar_images_div.find_all('a'):
+            url = f"https://www.google.com{similar_images_link['href']}"
+            result['similar_google'].append(url)
 
-reply_markup = InlineKeyboardMarkup(
+    best_guess_div = soup.find('div', {'class': 'r5a77d'})
+    if best_guess_div:
+        output = best_guess_div.get_text()
+        decoded_text = unidecode(output)
+        result["output_google"] = f"[{decoded_text}"
+
+    return result, to_parse
+
+async def get_file_id_from_message(msg):
+    file_id = None
+    message = msg.reply_to_message
+    if not message:
+        return
+    if message.document:
+        if int(message.document.file_size) > 3145728:
+            return
+        mime_type = message.document.mime_type
+        if mime_type not in ("image/png", "image/jpeg"):
+            return
+        file_id = message.document.file_id
+
+    if message.sticker:
+        if message.sticker.is_animated:
+            if not message.sticker.thumbs:
+                return
+            file_id = message.sticker.thumbs[0].file_id
+        else:
+            file_id = message.sticker.file_id
+
+    if message.photo:
+        file_id = message.photo.file_id
+
+    if message.animation:
+        if not message.animation.thumbs:
+            return
+        file_id = message.animation.thumbs[0].file_id
+
+    if message.video:
+        if not message.video.thumbs:
+            return
+        file_id = message.video.thumbs[0].file_id
+    return file_id
+
+@app.on_message(filters.command(["pp", "grs", "reverse", "r"]) & filters.group)
+async def _reverse(_, msg):
+    text = await msg.reply("`⏫ Uploading To Google Search Engine`")
+    file_id = await get_file_id_from_message(msg)
+    if not file_id:
+        return await text.edit("`Dear Pro People's Please Reply To A Media File 🗃️`")
+    
+    await text.edit("`🌐 Wait For >1 Min Searching Your Prompt`")
+    result, to_parse = await Sauce(bot_token, file_id)
+
+    if not result["output_google"]:
+        return await text.edit("`😅 Ntg Found On Google Buddy`")
+
+    # Get similar images text
+    similar_images_text = ""
+    if result["similar_google"]:
+        for url in result['similar_google']:
+            similar_images_text += f"\n- [Similar Image]({url})"
+    else:
+        similar_images_text = "\nNo similar images found."
+
+    # Link to Google Images Search
+    google_images_link = f'https://www.google.com/search?tbm=isch&q={quote_plus(result["output_google"])}'
+
+    reply_text = (
+        f'Google: {result["output_google"]}\n'
+        f'Made by @ikaris0_0 distributed by @team_devx'
+        f'{similar_images_text}\n'
+        f'[Explore More Similar Images]({google_images_link})'
+    )
+
+    keyboard = [
         [
-            [
-                InlineKeyboardButton("⤜ Sᴜᴘᴘᴏʀᴛ ⤛", url="https://t.me/botsupportx"),
-                InlineKeyboardButton("⇜ Uᴘᴅᴀᴛᴇs ⇝", url="https://t.me/botupdatex")
-            ],
-            [
-                InlineKeyboardButton("☊ Oᴡɴᴇʀ ☋", url="https://t.me/Ikaris0_0"),
-                InlineKeyboardButton("☌ Cʀᴇᴅɪᴛs ☌", url="https://telegra.ph/𓆩Ꭰᥲʀκ𓆪-𖤍-11-20-2")
-            ],
-            [
-                InlineKeyboardButton("+ Aᴅᴅ Mᴇ Iɴ Gʀᴏᴜᴘ +", url="https://t.me/Chat_Rank_Roobot?startgroup=true")
-            ]
+            InlineKeyboardButton("📌 Updates", url="https://t.me/botupdatex"),
+            InlineKeyboardButton("👾 Support 📈", url="https://t.me/team_devsX"),
         ]
-)
+    ]
 
+    reply_markup = InlineKeyboardMarkup(keyboard)
 
-@waifu.on_message(filters.command("start", prefix))
-async def start_command(_, message):
-    mention = f"@{message.from_user.username}" if message.from_user.username else message.from_user.mention
-    
-    if message.chat.type == enums.ChatType.PRIVATE:
-        user_id = int(message.from_user.id)
-        await message.reply_photo(photo=photo_link, caption=start_message.format(mention=mention), reply_markup=reply_markup)
-        if user_id not in await get_users_list():
-            await add_users_to_db(user_id)
-
-@waifu.on_message(filters.command("start", prefix))
-async def start_group(_, message):
-    chat_id = int(message.chat.id)
-    mention = f"@{message.from_user.username}" if message.from_user.username else message.from_user.mention
-    await message.reply_photo(photo=photo_link, caption=start_message.format(mention=mention), reply_markup=reply_markup)
-    if chat_id not in await get_chats_list():
-        await add_chat_to_db(message.chat)
-    
+    await text.edit_text(reply_text, reply_markup=reply_markup, parse_mode=ParseMode.MARKDOWN)
