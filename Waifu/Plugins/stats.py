@@ -1,23 +1,31 @@
-from pyrogram import filters
-from Waifu.Database.main import get_chats_list, get_users_list
-from Waifu import waifu
 
-@waifu.on_message(filters.command("stats", prefixes="/"))
-async def bot_stats(_, message):
-    total_users = await get_users_count()
-    total_chats = await get_chats_count()
 
-    text = f"<b>Bot Statistics:</b>\n\n"
-    text += f"**Total Users:** `{total_users}`\n"
-    text += f"**Total Chats:** `{total_chats}`\n"
+from Waifu import waifu as api
+from pyrogram import Client, filters
+import requests
 
-    await message.reply_text(text)
+@api.on_message(filters.command("hentai", prefixes="/"))
+def hentai_command(client, message):
+    api_url = "https://hentaibar.onrender.com/random"
 
-async def get_users_count():
-    user_ids = await get_users_list()
-    return len(user_ids)
+    try:
+        await message.reply("Please wait patiently. Downloading your request...")
+        response = requests.get(api_url)
+        response.raise_for_status()  # Check for errors
 
-async def get_chats_count():
-    chats = await get_chats_list()
-    return len(chats)
-  
+        hentai_data = response.json()
+
+        thumb_url = hentai_data.get('thum')
+        file_url = hentai_data.get('file')
+        name = hentai_data.get('name')
+        upload_date = hentai_data.get('upload_date')
+        duration = hentai_data.get('duration')
+
+        if thumb_url and file_url and name and upload_date and duration:
+            # Send thumbnail as a photo and other data in the caption
+            message.reply_photo(thumb_url, caption=f"Name: {name}\nUpload Date: {upload_date}\nDuration: {duration}\n\n{file_url}")
+        else:
+            message.reply_text("Error: Incomplete data received from the API.")
+
+    except requests.exceptions.RequestException as err:
+        message.reply_text(f"Error fetching data: {err}")
