@@ -8,7 +8,7 @@ from urllib.parse import quote_plus, unquote
 from bs4 import BeautifulSoup
 from unidecode import unidecode
 from Waifu import waifu as app
-from Waifu import TOKEN as bot_token
+from Waifu import bot_token
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from pyrogram.enums import ParseMode
