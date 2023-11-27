@@ -1,15 +1,14 @@
-
-
 from Waifu import waifu as api
 from pyrogram import Client, filters
 import requests
 
 @api.on_message(filters.command("hentai", prefixes="/"))
-def hentai_command(client, message):
+async def hentai_command(client, message):
     api_url = "https://hentaibar.onrender.com/random"
 
     try:
-        await message.reply("Please wait patiently. Downloading your request...")
+        await message.reply("Please wait patiently. Fetching your request...")
+
         response = requests.get(api_url)
         response.raise_for_status()  # Check for errors
 
@@ -23,9 +22,11 @@ def hentai_command(client, message):
 
         if thumb_url and file_url and name and upload_date and duration:
             # Send thumbnail as a photo and other data in the caption
-            message.reply_photo(thumb_url, caption=f"Name: {name}\nUpload Date: {upload_date}\nDuration: {duration}\n\n{file_url}")
+            await message.reply_photo(thumb_url, caption=f"Name: {name}\nUpload Date: {upload_date}\nDuration: {duration}\n\n{file_url}")
         else:
-            message.reply_text("Error: Incomplete data received from the API.")
+            await message.reply_text("Error: Incomplete data received from the API.")
 
     except requests.exceptions.RequestException as err:
-        message.reply_text(f"Error fetching data: {err}")
+        await message.reply_text(f"Error fetching data: {err}")
+
+
