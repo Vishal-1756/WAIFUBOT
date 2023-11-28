@@ -1,7 +1,6 @@
 from pyrogram import Client, filters
 from pyrogram.types import InputMediaPhoto
 import requests
-import time
 from Waifu import waifu as app
 
 api_url = "https://api.betabotz.org/api/webzone/whatanime"
@@ -60,7 +59,7 @@ async def sauce_command(client, message):
 
             # Make a request to the whatanime API
             api_params = {
-                "query": telegraph_data["src"],
+                "query": f"{telegraph_url}/{telegraph_data['src']}",
                 "apikey": "QlyCxRQV"  # Replace with your API key
             }
 
