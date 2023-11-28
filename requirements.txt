@@ -15,3 +15,4 @@ urllib3
 aiohttp
 lexica-api
 pillow
+telegraph
