@@ -85,4 +85,3 @@ async def sauce_command(client, message):
     else:
         await message.reply_text("Please reply to a photo or video or provide a direct link when using the /sauce command.")
 
-app.run()
