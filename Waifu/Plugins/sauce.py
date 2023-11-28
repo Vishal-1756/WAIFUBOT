@@ -25,7 +25,38 @@ async def shorten_video_url(video_url):
 async def get_file_id_from_message(message):
     file_id = None
     if message.media:
-        file_id = message.media.file_id
+        if hasattr(message.media, "document"):
+            if int(message.media.document.file_size) > 3145728:
+                return None
+            mime_type = message.media.document.mime_type
+            if mime_type not in ("image/png", "image/jpeg"):
+                return None
+            file_id = message.media.document.file_id
+
+        elif hasattr(message.media, "sticker"):
+            if message.media.sticker.is_animated:
+                if not message.media.sticker.thumbs:
+                    return None
+                file_id = message.media.sticker.thumbs[0].file_id
+            else:
+                file_id = message.media.sticker.file_id
+
+        elif hasattr(message.media, "photo"):
+            file_id = message.media.photo.file_id
+
+        elif hasattr(message.media, "animation"):
+            if not message.media.animation.thumbs:
+                return None
+            file_id = message.media.animation.thumbs[0].file_id
+
+        elif hasattr(message.media, "video"):
+            if not message.media.video.thumbs:
+                return None
+            file_id = message.media.video.thumbs[0].file_id
+
+        elif hasattr(message.media, "video_note"):
+            file_id = message.media.video_note.file_id
+
     return file_id
 
 
