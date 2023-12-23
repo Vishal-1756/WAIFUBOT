@@ -67,7 +67,7 @@ async def reverse_search(client, message):
         urls2 = [res["url"] for res in results2[:10]]
         more_results_text = "\n".join([f"{i + 1}. {desc}: {url}" for i, (desc, url) in enumerate(zip(image_descriptions2, urls2))])
 
-        more_results_text_url = await upload_to_telegraph(None, more_results_text)
+        more_results_text_url = upload_to_telegraph(None, more_results_text)
         buttons = create_buttons(request_url, similar_urls, more_results_text_url)
         text = f"From Google Search Engine: {image_description}\n\nFrom Bing Search Engine:\n"
         text += "\n".join([f"{i + 1}. {desc}" for i, desc in enumerate(image_descriptions2)])
