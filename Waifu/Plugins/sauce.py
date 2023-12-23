@@ -5,7 +5,7 @@ import requests
 from Waifu import waifu as app
 from telegraph import Telegraph
 
-API_URL = "https://grs-teamx.onrender.com/reverse?url={url}"
+API_URL = "https://api.qewertyy.me/image-reverse/google?img_url={url}"
 API_URL_BING = "https://api.qewertyy.me/image-reverse/bing?img_url={url}"
 
 telegraph = Telegraph()
@@ -68,9 +68,8 @@ async def reverse_search(client, message):
         response2 = requests.get(url2)
         result = response.json()
         result2 = response2.json()
-        image_description = result["result"]["image"]
-        request_url = result["result"]["requestUrl"]
-        similar_url = result.get("similarUrl", [])
+        results = result.get("bestResults", [])      
+        
         results2 = result2.get("bestResults", [])
         image_descriptions2 = [res["name"] for res in results2[:10]]
         urls2 = [res["url"] for res in results2[:10]]
