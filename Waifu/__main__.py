@@ -1,9 +1,8 @@
 import pyrogram
 
-from Waifu import waifu , app 
+from Waifu import waifu
 
 async def run_clients():
-      await app.start()
       await waifu.start()
       await pyrogram.idle()
       
