@@ -67,7 +67,7 @@ def create_buttons(request_url, similar_urls, more_results_text):
     keyboard = [
         [
             types.InlineKeyboardButton("Request URL", url=request_url),
-            types.InlineKeyboardButton("Similar URLs", url=similar_url) for similar_url in similar_urls
+            types.InlineKeyboardButton("Similar URLs", url=similar_url)
         ],
         [
             types.InlineKeyboardButton("More Results", callback_data=f"more_results:{more_results_text}")
