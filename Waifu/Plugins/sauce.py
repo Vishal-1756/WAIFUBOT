@@ -3,8 +3,6 @@ from telegraph import upload_file
 from json import JSONDecodeError
 import requests
 from telegraph import Telegraph
-from Waifu import waifu as app
-
 
 API_URL = "https://api.qewertyy.me/image-reverse/google?img_url={url}"
 API_URL_BING = "https://api.qewertyy.me/image-reverse/bing?img_url={url}"
@@ -54,7 +52,7 @@ async def reverse_search(client, message):
     if reply_message.photo:
         m = await message.reply_text("`Parsing Your Media Wait`")
         photo_path = await reply_message.download()
-        telegraph_url = telegraph(photo_path)
+        telegraph_url = await telegraph(photo_path)
         url = API_URL.format(url=telegraph_url)
         url2 = API_URL_BING.format(url=telegraph_url)            
     else:
@@ -75,7 +73,7 @@ async def reverse_search(client, message):
         if telegraph_url:
             more_results_text_url_bing = upload_text_to_telegraph(more_results_text)
             more_results_text_url_google = f"https://images.google.com/searchbyimage?safe=off&sbisrc=tg&image_url={telegraph_url}"
-            buttons = create_buttons(more_results_text_url_bing, more_results_text_url_google)
+            buttons = create_buttons(more_results_text_url_google, more_results_text_url_bing)
             text = f"From Google Search Engine:\n"
             text += "\n".join([f"{i + 1}. {desc}" for i, desc in enumerate(results)])
             text += "\n\nFrom Bing Search Engine:\n"
