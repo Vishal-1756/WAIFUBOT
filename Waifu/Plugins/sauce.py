@@ -75,6 +75,7 @@ async def reverse_search(client, message):
         more_results_texts = str(more_results_text)
         
         if telegraph_url:
+            print(f"more_results_texts: {more_results_texts}")
             more_results_text_url_bing = upload_text_to_telegraph(more_results_texts)
             more_results_text_url_google = f"https://images.google.com/searchbyimage?safe=off&sbisrc=tg&image_url={telegraph_url}"
             buttons = create_buttons(more_results_text_url_google, more_results_text_url_bing)
