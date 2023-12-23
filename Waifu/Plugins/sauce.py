@@ -3,24 +3,31 @@ from telegraph import upload_file
 from json import JSONDecodeError
 import requests
 from Waifu import waifu as app
+from telegraph import Telegraph, upload_file
 
 API_URL = "https://reverse-pbq1.onrender.com/reverse?url={url}"
 API_URL_BING = "https://api.qewertyy.me/image-reverse/bing?img_url={url}"
 
-async def telegraph(message, path):
-    try:
-        telegraph_file = upload_file(path)
-    except JSONDecodeError:
-        await message.reply_text("Failed To Upload.")
-        url = False
-        return url
+telegraph = Telegraph()
+telegraph.create_account(short_name='Bing Image Search Results')
 
+def upload_to_telegraph(file_path, text_content=None):
     try:
-        url = "https://telegra.ph/" + telegraph_file[0]
-    except:
-        pass
+        if text_content:
+            response = telegraph.create_page(
+                f"Caption: {text_content}",
+                content=[("p", text_content)]
+            )
+            telegraph_url = 'https://telegra.ph/{}'.format(response['path'])
+        else:
+            telegraph_file = upload_file(file_path)
+            telegraph_url = "https://telegra.ph/" + telegraph_file[0]
 
-    return url
+        return telegraph_url
+    except Exception as e:
+        print(f"Error uploading to Telegraph: {str(e)}")
+        return None
+
 
 def create_buttons(request_url, similar_urls, more_results_text):
     keyboard = [
