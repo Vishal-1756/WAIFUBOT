@@ -40,11 +40,8 @@ async def telegraph(path):
 def create_buttons(request_url, similar_url, more_results_text_url):
     keyboard = [
         [
-            types.InlineKeyboardButton("Request URL", url=request_url),
-            types.InlineKeyboardButton("Similar URLs", url=similar_url)
-        ],
-        [
-            types.InlineKeyboardButton("More Results", url=more_results_text_url)
+            types.InlineKeyboardButton("More Google results", url=more_results_text_url_google),
+            types.InlineKeyboardButton("More Bing Results", url=more_results_text_url_bing)
         ]
     ]
     return types.InlineKeyboardMarkup(keyboard)
