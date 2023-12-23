@@ -5,14 +5,10 @@ asyncio
 tgcrypto
 requests
 motor
-secureme
-wget 
 httpx
-google-reverse-search
 beautifulsoup4 
 unidecode
 urllib3
 aiohttp
 lexica-api
-pillow
 telegraph
