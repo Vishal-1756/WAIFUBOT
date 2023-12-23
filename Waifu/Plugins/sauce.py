@@ -9,13 +9,15 @@ API_URL = "https://api.qewertyy.me/image-reverse/google?img_url={url}"
 API_URL_BING = "https://api.qewertyy.me/image-reverse/bing?img_url={url}"
 
 telegraph = Telegraph()
-telegraph.create_account(short_name='TeamX')
+telegraph.create_account(short_name="The Team X")
 
 def upload_text_to_telegraph(text_content):
     try:
         response = telegraph.create_page(
             title='Bing Image Search',
-            content=[('p', text_content)]
+            html_content=[('p', text_content)],
+            author_name='TeamX',
+            author_url='https://telegram.dog/team_devsX'
         )
         telegraph_url = 'https://telegra.ph/{}'.format(response['path'])
         return telegraph_url
