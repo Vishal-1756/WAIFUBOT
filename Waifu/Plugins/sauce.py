@@ -3,7 +3,7 @@ from telegraph import upload_file
 from json import JSONDecodeError
 import requests
 from telegraph import Telegraph
-from Waifu import waifu
+from Waifu import waifu as app
 
 
 API_URL = "https://api.qewertyy.me/image-reverse/google?img_url={url}"
