@@ -45,7 +45,7 @@ async def reverse_search(client, message):
     reply_message = message.reply_to_message
      
     if reply_message.photo:
-        await message.reply_text("`Parsing Your Media Wait`")
+        m = await message.reply_text("`Parsing Your Media Wait`")
         photo_path = await reply_message.download()
         telegraph_url = upload_to_telegraph(photo_path)
         url = API_URL.format(url=telegraph_url)
@@ -61,7 +61,7 @@ async def reverse_search(client, message):
         result2 = response2.json()
         image_description = result["result"]["image"]
         request_url = result["result"]["requestUrl"]
-        similar_urls = result.get("similarUrl", [])
+        similar_url = result.get("similarUrl", [])
         results2 = result2.get("bestResults", [])
         image_descriptions2 = [res["name"] for res in results2[:10]]
         urls2 = [res["url"] for res in results2[:10]]
@@ -73,5 +73,6 @@ async def reverse_search(client, message):
         text += "\n".join([f"{i + 1}. {desc}" for i, desc in enumerate(image_descriptions2)])
 
         await message.reply_text(text, reply_markup=buttons)
+        m.delete()
     except Exception as e:
         await message.reply_text(f"Error fetching information: {str(e)}")
