@@ -15,7 +15,7 @@ def upload_text_to_telegraph(text_content):
     try:
         response = telegraph.create_page(
             title='Bing Image Search',
-            html_content=[('p', text_content)],
+            html_content=text_content,
             author_name='TeamX',
             author_url='https://telegram.dog/team_devsX'
         )
