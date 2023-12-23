@@ -2,7 +2,7 @@ from pyrogram import Client, filters, types
 from telegraph import upload_file
 from json import JSONDecodeError
 import requests
-from Waifu import waifu
+from Waifu import waifu as app
 
 API_URL = "https://reverse-pbq1.onrender.com/reverse?url={url}"
 
