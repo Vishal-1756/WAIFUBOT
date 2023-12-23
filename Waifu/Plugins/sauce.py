@@ -92,6 +92,7 @@ async def reverse_search(client, message):
             text += "\n".join([f"{i + 1}. {desc}" for i, desc in enumerate(results2)])
 
         await message.reply_text(text, reply_markup=buttons)
-        m.delete()
+        if m:
+            await m.delete()
     except Exception as e:
         await message.reply_text(f"Error fetching information: {str(e)}")
