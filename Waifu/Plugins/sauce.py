@@ -1,80 +1,56 @@
-from pyrogram import Client, filters
-import requests
+from pyrogram import Client, filters, types
 from telegraph import upload_file
-from Waifu import waifu as app
-from Waifu import bot_token
+from json import JSONDecodeError
+import requests
+from Waifu import waifu
 
-api_url = "https://api.betabotz.org/api/webzone/whatanime"
-tinyurl_api_url = "https://api.erdwpe.com/api/linkshort/tinyurl"
+API_URL = "https://reverse-pbq1.onrender.com/reverse?url={url}"
 
-
-async def shorten_video_url(video_url):
+async def telegraph(message, path):
     try:
-        response = requests.get(tinyurl_api_url, params={"link": video_url})
-        response_data = response.json()
+        telegraph_file = upload_file(path)
+    except JSONDecodeError:
+        await message.reply_text("Failed To Upload.")
+        url = False
+        return url
 
-        if response_data["status"] == True:
-            return response_data["result"]
-        else:
-            print("TinyURL API request failed:", response_data)
-            return None
-    except Exception as error:
-        print("Error shortening URL:", error)
-        return None
-
-
-async def get_file_id_from_message(message):
-    file_id = None
-    if message.reply_to_message and message.reply_to_message.media:
-        r = requests.post(f'https://api.telegram.org/bot{bot_token}/getFile?file_id={message.reply_to_message.media.file_id}').json()
-        file_id = r['result']['file_path']
-
-    return file_id
-
-
-async def sauce_command(client, message):
     try:
-        # Check if the message has a quoted message
-        file_id = await get_file_id_from_message(message)
-        if file_id:
-            media_path = await client.download_media(file_id)
-            telegraph_url = upload_file(media_path)
+        url = "https://telegra.ph/" + telegraph_file[0]
+    except:
+        pass
 
-            if telegraph_url:
-                api_params = {"query": telegraph_url, "apikey": "GK5zaGhL"}  # Replace with your API key
-                wait_message = await message.reply_text("Please wait... Uploading your query to the API.")
+    return url
 
-                # Make a request to the whatanime API
-                response = requests.get(api_url, params=api_params)
-                api_data = response.json()
+def create_buttons(request_url, similar_url):
+    keyboard = [
+        [
+            types.InlineKeyboardButton("Request URL", url=request_url),
+            types.InlineKeyboardButton("Similar URL", url=similar_url)
+        ]
+    ]
+    return types.InlineKeyboardMarkup(keyboard)
 
-                # Delete the "Please wait..." message
-                wait_message.delete()
+@app.on_message(filters.command("pp") & filters.reply)
+async def reverse_search(client, message):
+    reply_message = message.reply_to_message
 
-                if api_data.get("status") and api_data.get("code") == 200:
-                    result_data = api_data["result"]["data"]
-                    name = result_data["filename"].replace('.mp4', '')
-                    episode = result_data["episode"]
-                    image = result_data["image"]
-                    video = result_data["video"]
+    if reply_message.photo:
+        photo_path = await reply_message.download()
+        telegraph_url = await telegraph(message, photo_path)
+        url = API_URL.format(url=telegraph_url)
+    elif reply_message.text:
+        url = API_URL.format(url=reply_message.text)
+    else:
+        await message.reply_text("Unsupported message type. Reply to an image or provide a URL.")
+        return
 
-                    # Shorten the video URL
-                    tinyurl = await shorten_video_url(video)
-
-                    caption = f"Name: *{name}*\nEpisode: *{episode}*\nVideo: *{tinyurl}*"
-
-                    try:
-                        # Send the media with the caption
-                        await message.reply_video(video, caption=caption, parse_mode="MarkdownV2")
-                    except Exception as send_error:
-                        await message.reply_text(f"Error while sending video: {send_error}")
-                else:
-                    await message.reply_text("Error: Unable to fetch data from the whatanime API")
-            else:
-                await message.reply_text("Error occurred while creating a direct link.")
-        else:
-            await message.reply_text("Error: Unable to get file ID from the media.")
-    except Exception as command_error:
-        await message.reply_text(f"Error: {str(command_error)}")
-
-app.on_message(filters.command("sauce", prefixes="/") | filters.text)(sauce_command)
+    try:
+        response = requests.get(url)
+        result = response.json()
+        image_description = result["result"]["image"]
+        request_url = result["result"]["requestUrl"]
+        similar_url = result["similarUrl"]
+        buttons = create_buttons(request_url, similar_url)
+        await message.reply_text(f"Image: {image_description}", reply_markup=buttons)
+    except Exception as e:
+        await message.reply_text(f"Error fetching information: {str(e)}")
