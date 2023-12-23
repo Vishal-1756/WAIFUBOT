@@ -28,7 +28,7 @@ def upload_to_telegraph(file_path, text_content=None):
         print(f"Error uploading to Telegraph: {str(e)}")
         return None
 
-def create_buttons(request_url, similar_urls, more_results_text_url):
+def create_buttons(request_url, similar_url, more_results_text_url):
     keyboard = [
         [
             types.InlineKeyboardButton("Request URL", url=request_url),
@@ -68,7 +68,7 @@ async def reverse_search(client, message):
         more_results_text = "\n".join([f"{i + 1}. {desc}: {url}" for i, (desc, url) in enumerate(zip(image_descriptions2, urls2))])
 
         more_results_text_url = upload_to_telegraph(None, more_results_text)
-        buttons = create_buttons(request_url, similar_urls, more_results_text_url)
+        buttons = create_buttons(request_url, similar_url, more_results_text_url)
         text = f"From Google Search Engine: {image_description}\n\nFrom Bing Search Engine:\n"
         text += "\n".join([f"{i + 1}. {desc}" for i, desc in enumerate(image_descriptions2)])
 
