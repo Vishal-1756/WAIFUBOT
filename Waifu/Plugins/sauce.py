@@ -2,8 +2,9 @@ from pyrogram import Client, filters, types
 from telegraph import upload_file
 from json import JSONDecodeError
 import requests
-from Waifu import waifu as app
 from telegraph import Telegraph
+from Waifu import waifu
+
 
 API_URL = "https://api.qewertyy.me/image-reverse/google?img_url={url}"
 API_URL_BING = "https://api.qewertyy.me/image-reverse/bing?img_url={url}"
@@ -37,10 +38,10 @@ async def telegraph(path):
         pass
     return telegraph_url
 
-def create_buttons(request_url, similar_url, more_results_text_url):
+def create_buttons(more_results_text_url_google, more_results_text_url_bing):
     keyboard = [
         [
-            types.InlineKeyboardButton("More Google results", url=more_results_text_url_google),
+            types.InlineKeyboardButton("Similar Image Google", url=more_results_text_url_google),
             types.InlineKeyboardButton("More Bing Results", url=more_results_text_url_bing)
         ]
     ]
@@ -65,22 +66,26 @@ async def reverse_search(client, message):
         response2 = requests.get(url2)
         result = response.json()
         result2 = response2.json()
-        results = result.get("bestResults", [])      
+        results = result.get("content", {}).get("bestResults", {}).get("names", [])      
         
-        results2 = result2.get("bestResults", [])
-        image_descriptions2 = [res["name"] for res in results2[:10]]
-        urls2 = [res["url"] for res in results2[:10]]
-        more_results_text = "\n".join([f"{i + 1}. {desc}: {url}" for i, (desc, url) in enumerate(zip(image_descriptions2, urls2))])
+        results2 = result2.get("content", {}).get("bestResults", {}).get("names", [])
+        urls2 = result2.get("content", {}).get("bestResults", {}).get("urls", [])
+        more_results_text = "\n".join([f"{i + 1}. {desc}: {url}" for i, (desc, url) in enumerate(zip(results2, urls2))])
 
         if telegraph_url:
-            more_results_text_url = upload_text_to_telegraph(more_results_text)
-            buttons = create_buttons(request_url, similar_url, more_results_text_url)
-            text = f"From Google Search Engine: {image_description}\n\nFrom Bing Search Engine:\n"
-            text += "\n".join([f"{i + 1}. {desc}" for i, desc in enumerate(image_descriptions2)])
+            more_results_text_url_bing = upload_text_to_telegraph(more_results_text)
+            more_results_text_url_google = f"https://images.google.com/searchbyimage?safe=off&sbisrc=tg&image_url={telegraph_url}"
+            buttons = create_buttons(more_results_text_url_bing, more_results_text_url_google)
+            text = f"From Google Search Engine:\n"
+            text += "\n".join([f"{i + 1}. {desc}" for i, desc in enumerate(results)])
+            text += "\n\nFrom Bing Search Engine:\n"
+            text += "\n".join([f"{i + 1}. {desc}" for i, desc in enumerate(results2)])
         else:
-            buttons = create_buttons(request_url, similar_url, None)
-            text = f"From Google Search Engine: {image_description}\n\nFrom Bing Search Engine:\n"
-            text += "\n".join([f"{i + 1}. {desc}" for i, desc in enumerate(image_descriptions2)])
+            buttons = create_buttons(None, None)
+            text = f"From Google Search Engine:\n"
+            text += "\n".join([f"{i + 1}. {desc}" for i, desc in enumerate(results)])
+            text += "\n\nFrom Bing Search Engine:\n"
+            text += "\n".join([f"{i + 1}. {desc}" for i, desc in enumerate(results2)])
 
         await message.reply_text(text, reply_markup=buttons)
         m.delete()
