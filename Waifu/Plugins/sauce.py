@@ -74,7 +74,7 @@ async def reverse_search(client, message):
         more_results_text = "\n".join([f"{i + 1}. {desc}: {url}" for i, (desc, url) in enumerate(zip(results2, urls2))])
         more_results_texts = str(more_results_text)
         
-        if telegraph_url:
+        if more_results_texts:
             print(f"more_results_texts: {more_results_texts}")
             more_results_text_url_bing = upload_text_to_telegraph(more_results_texts)
             more_results_text_url_google = f"https://images.google.com/searchbyimage?safe=off&sbisrc=tg&image_url={telegraph_url}"
@@ -84,7 +84,8 @@ async def reverse_search(client, message):
             text += "\n\nFrom Bing Search Engine:\n"
             text += "\n".join([f"{i + 1}. {desc}" for i, desc in enumerate(results2)])
         else:
-            buttons = create_buttons(None, None)
+            more_results_text_url_google = f"https://images.google.com/searchbyimage?safe=off&sbisrc=tg&image_url={telegraph_url}"
+            buttons = create_buttons(more_results_text_url_google, None)      
             text = f"From Google Search Engine:\n"
             text += "\n".join([f"{i + 1}. {desc}" for i, desc in enumerate(results)])
             text += "\n\nFrom Bing Search Engine:\n"
