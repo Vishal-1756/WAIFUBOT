@@ -5,7 +5,7 @@ import requests
 from Waifu import waifu as app
 from telegraph import Telegraph
 
-API_URL = "https://reverse-pbq1.onrender.com/reverse?url={url}"
+API_URL = "https://grs-teamx.onrender.com/reverse?url={url}"
 API_URL_BING = "https://api.qewertyy.me/image-reverse/bing?img_url={url}"
 
 telegraph = Telegraph()
