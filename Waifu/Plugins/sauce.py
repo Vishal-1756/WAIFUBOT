@@ -47,7 +47,7 @@ async def reverse_search(client, message):
     if reply_message.photo:
         await message.reply_text("`Parsing Your Media Wait`")
         photo_path = await reply_message.download()
-        telegraph_url = await upload_to_telegraph(photo_path)
+        telegraph_url = upload_to_telegraph(photo_path)
         url = API_URL.format(url=telegraph_url)
         url2 = API_URL_BING.format(url=telegraph_url)            
     else:
