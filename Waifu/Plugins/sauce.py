@@ -23,7 +23,20 @@ def upload_text_to_telegraph(text_content):
         print(f"Error uploading text to Telegraph: {str(e)}")
         return None
 
-
+async def telegraph(path):
+     try:
+       telegraph = upload_file(path)
+     except JSONDecodeError:        
+             print("Failed To Upload 🚫.")
+             url = False
+             return url
+     try:
+        for file_id in telegraph:
+             url = "https://graph.org/" + file_id
+     except:
+         pass
+     return url
+    
 def create_buttons(request_url, similar_url, more_results_text_url):
     keyboard = [
         [
