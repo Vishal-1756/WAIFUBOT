@@ -22,7 +22,20 @@ async def telegraph(message, path):
 
     return url
 
-@app.on_message(filters.command("r") & filters.reply)
+def create_buttons(request_url, similar_urls, more_results_text):
+    keyboard = [
+        [
+            types.InlineKeyboardButton("Request URL", url=request_url),
+            types.InlineKeyboardButton("Similar URLs", url=similar_url)
+        ],
+        [
+            types.InlineKeyboardButton("More Results", callback_data=f"more_results:{more_results_text}")
+        ]
+    ]
+    return types.InlineKeyboardMarkup(keyboard)
+    
+
+@app.on_message(filters.command("kela") & filters.reply)
 async def reverse_search(client, message):
     reply_message = message.reply_to_message
 
@@ -32,7 +45,6 @@ async def reverse_search(client, message):
         url = API_URL.format(url=telegraph_url)
         url2 = API_URL_BING.format(url=telegraph_url)
     elif reply_message.text:
-        telegraph_url = "Your text here"  # Replace with actual telegraph_url for text case
         url = API_URL.format(url=telegraph_url)
         url2 = API_URL_BING.format(url=telegraph_url)
     else:
@@ -46,9 +58,7 @@ async def reverse_search(client, message):
         result2 = response2.json()
         image_description = result["result"]["image"]
         request_url = result["result"]["requestUrl"]
-        similar_urls = result.get("similarUrl", [])
-
-        # Process the top 10 Bing results
+        similar_url = result.get("similarUrl", [])
         results2 = result2.get("bestResults", [])
         image_descriptions2 = [res["name"] for res in results2[:10]]
         urls2 = [res["url"] for res in results2[:10]]
@@ -63,14 +73,3 @@ async def reverse_search(client, message):
         await message.reply_text(f"Error fetching information: {str(e)}")
 
 
-def create_buttons(request_url, similar_urls, more_results_text):
-    keyboard = [
-        [
-            types.InlineKeyboardButton("Request URL", url=request_url),
-            types.InlineKeyboardButton("Similar URLs", url=similar_url)
-        ],
-        [
-            types.InlineKeyboardButton("More Results", callback_data=f"more_results:{more_results_text}")
-        ]
-    ]
-    return types.InlineKeyboardMarkup(keyboard)
