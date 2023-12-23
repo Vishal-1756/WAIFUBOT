@@ -56,7 +56,7 @@ async def reverse_search(client, message):
     if reply_message.photo:
         m = await message.reply_text("`Parsing Your Media Wait`")
         photo_path = await reply_message.download()
-        telegraph_url = await telegraph(photo_path)
+        telegraph_url = telegraph(photo_path)
         url = API_URL.format(url=telegraph_url)
         url2 = API_URL_BING.format(url=telegraph_url)            
     else:
@@ -77,7 +77,7 @@ async def reverse_search(client, message):
         more_results_text = "\n".join([f"{i + 1}. {desc}: {url}" for i, (desc, url) in enumerate(zip(image_descriptions2, urls2))])
 
         if telegraph_url:
-            more_results_text_url = await upload_text_to_telegraph(more_results_text)
+            more_results_text_url = upload_text_to_telegraph(more_results_text)
             buttons = create_buttons(request_url, similar_url, more_results_text_url)
             text = f"From Google Search Engine: {image_description}\n\nFrom Bing Search Engine:\n"
             text += "\n".join([f"{i + 1}. {desc}" for i, desc in enumerate(image_descriptions2)])
