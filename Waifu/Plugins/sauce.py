@@ -21,12 +21,17 @@ def upload_to_telegraph(file_path, text_content=None):
             telegraph_url = 'https://telegra.ph/{}'.format(response['path'])
         else:
             telegraph_file = upload_file(file_path)
-            telegraph_url = "https://telegra.ph/" + telegraph_file[0]
+
+            if telegraph_file is not None and telegraph_file[0] is not None:
+                telegraph_url = "https://telegra.ph/" + telegraph_file[0]
+            else:
+                raise ValueError("Error uploading file to Telegraph")
 
         return telegraph_url
     except Exception as e:
         print(f"Error uploading to Telegraph: {str(e)}")
         return None
+
 
 def create_buttons(request_url, similar_url, more_results_text_url):
     keyboard = [
