@@ -5,6 +5,8 @@ import requests
 from Waifu import waifu as app
 
 API_URL = "https://reverse-pbq1.onrender.com/reverse?url={url}"
+API_URL_BING = "https://api.qewertyy.me/image-reverse/bing?img_url={url}"
+API_URL_GOOGLE = "https://api.qewertyy.me/image-reverse/bing?img_url={url}"
 
 async def telegraph(message, path):
     try:
