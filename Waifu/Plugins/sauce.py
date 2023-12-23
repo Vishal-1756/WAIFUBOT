@@ -25,7 +25,7 @@ def upload_text_to_telegraph(text_content):
         print(f"Error uploading text to Telegraph: {str(e)}")
         return None
 
-async def telegraph(path):
+async def telegraph_upload(path):
     try:
         telegraph_file = upload_file(path)
     except JSONDecodeError:        
@@ -55,7 +55,7 @@ async def reverse_search(client, message):
     if reply_message.photo:
         m = await message.reply_text("`Parsing Your Media Wait`")
         photo_path = await reply_message.download()
-        telegraph_url = await telegraph(photo_path)
+        telegraph_url = await telegraph_upload(photo_path)
         url = API_URL.format(url=telegraph_url)
         url2 = API_URL_BING.format(url=telegraph_url)            
     else:
