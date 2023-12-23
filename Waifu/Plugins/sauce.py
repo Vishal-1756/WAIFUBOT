@@ -32,7 +32,7 @@ async def telegraph(path):
         return url
     try:
         for file_id in telegraph_file:
-            url = "https://graph.org/" + file_id
+            telegraph_url = "https://graph.org/" + file_id
     except:
         pass
     return telegraph_url
