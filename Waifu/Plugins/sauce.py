@@ -72,7 +72,8 @@ async def reverse_search(client, message):
         results2 = result2.get("content", {}).get("bestResults", {}).get("names", [])
         urls2 = result2.get("content", {}).get("bestResults", {}).get("urls", [])
         more_results_text = "\n".join([f"{i + 1}. {desc}: {url}" for i, (desc, url) in enumerate(zip(results2, urls2))])
-
+        more_results_text = str(more_results_text)
+        
         if telegraph_url:
             more_results_text_url_bing = upload_text_to_telegraph(more_results_text)
             more_results_text_url_google = f"https://images.google.com/searchbyimage?safe=off&sbisrc=tg&image_url={telegraph_url}"
